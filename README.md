@@ -1,7 +1,7 @@
 # PackageManager
 This package manager can be used to create a minified zip file representing a directory structure.
 
-When create a package the library will iterate the directory tree of the passed directory and build an xml file manifest of 
+When creating a package the library will iterate the directory tree of the passed directory and build an xml file manifest of 
 the entire structure. This includes the folders and files. 
 
 It then moves all unique files to a temp directory and zips all of the files along with the manifest.
