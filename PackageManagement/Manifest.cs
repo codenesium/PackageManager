@@ -9,6 +9,9 @@ using System.Security.Cryptography;
 
 namespace Codenesium.PackageManagement
 {
+    /// <summary>
+    /// Creates a manifest of files and folders in a directory.
+    /// </summary>
     public class ManifestBuilder
     {
 
@@ -40,6 +43,11 @@ namespace Codenesium.PackageManagement
             return root;
         }
 
+        /// <summary>
+        /// Returns a list of files contained in a directory and all subdirectory
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <returns></returns>
         public List<ManifestFile> BuildFileList(string directory)
         {
             List<ManifestFile> fileList = new List<ManifestFile>();
@@ -120,6 +128,5 @@ namespace Codenesium.PackageManagement
             }
             return sb.ToString();
         }
-
     }
 }

@@ -17,6 +17,11 @@ namespace Codenesium.PackageManagement
                 Directory.CreateDirectory(outputDirectory);
             }
 
+            if(!File.Exists(inputFilename))
+            {
+                throw new FileNotFoundException("Input filename was not found " + inputFilename);
+            }
+
             await Task.Factory.StartNew(() =>
             {
                 using (ZipFile zip = ZipFile.Read(inputFilename))

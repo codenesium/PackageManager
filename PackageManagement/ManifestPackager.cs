@@ -14,6 +14,15 @@ namespace Codenesium.PackageManagement
         List<ManifestFile> _fileList = new List<ManifestFile>();
         string _tmpDirectory;
         string _destinationDirectory;
+
+        /// <summary>
+        /// Extracts the specified input zip file to the specified tmp directory and then rebuilds the 
+        /// folder structure in the destination directory using the manifest contained in the package.
+        /// </summary>
+        /// <param name="inputFilename"></param>
+        /// <param name="destinationDirectory"></param>
+        /// <param name="tmpDirectory"></param>
+        /// <returns></returns>
         public async Task ExtractPackage(string inputFilename, string destinationDirectory, string tmpDirectory)
         {
             this._tmpDirectory = tmpDirectory;
@@ -39,8 +48,8 @@ namespace Codenesium.PackageManagement
 
              IterateAndCreateDirectoryStructure(this._destinationDirectory,manifest);
              IterateAndCreateFileStructure(this._destinationDirectory, manifest);
-            await Task.Run(() =>
-            {
+             await Task.Run(() =>
+             {
                 string[] files = Directory.GetFiles(tmpDirectory);
                 foreach (string file in files)
                 {
@@ -50,6 +59,11 @@ namespace Codenesium.PackageManagement
         }
 
 
+        /// <summary>
+        /// Uses a manifest definition file to rebuild the directory structure contained in the manifest
+        /// </summary>
+        /// <param name="destinationDirectory"></param>
+        /// <param name="directory"></param>
         private void IterateAndCreateDirectoryStructure(string destinationDirectory, XElement directory)
         {
             string path = destinationDirectory;
@@ -69,6 +83,11 @@ namespace Codenesium.PackageManagement
             }
         }
 
+        /// <summary>
+        /// Uses a manifest to populate a directory structure with files from a tmp directory
+        /// </summary>
+        /// <param name="destinationDirectory"></param>
+        /// <param name="directory"></param>
         private void IterateAndCreateFileStructure(string destinationDirectory, XElement directory)
         {
             string path = destinationDirectory;
@@ -83,7 +102,6 @@ namespace Codenesium.PackageManagement
 
                 ManifestFile mainfestFile = this._fileList.Where(x => x.Key == key).FirstOrDefault();
                 File.Copy(Path.Combine(this._tmpDirectory, mainfestFile.Key), Path.Combine(path, mainfestFile.Name),true);
-
             }
 
             foreach (XElement subDirectory in directory.Elements("directory"))
@@ -91,7 +109,16 @@ namespace Codenesium.PackageManagement
                 IterateAndCreateFileStructure(path, subDirectory);
             }
         }
-        public async Task CreatePackage(string inputDirectory,string destinationDirectory, string tmpDirectory,string prefix, string majorVersion,string minorVersion)
+        /// <summary>
+        /// Creates a zip package with a manifest from an input directory.
+        /// 
+        /// </summary>
+        /// <param name="inputDirectory">The directory you want to zip</param>
+        /// <param name="destinationDirectory">The destination of the zip file</param>
+        /// <param name="tmpDirectory">The directory where renamed files will be copied while zipping</param>
+        /// <param name="packageNameWithExtension">The name of the zip file</param>
+        /// <returns></returns>
+        public async Task CreatePackage(string inputDirectory,string destinationDirectory, string tmpDirectory, string packageNameWithExtension)
         {
             ManifestBuilder builder = new ManifestBuilder();
             List<ManifestFile> fileList = builder.BuildFileList(inputDirectory);
@@ -102,7 +129,7 @@ namespace Codenesium.PackageManagement
             File.WriteAllText(Path.Combine(tmpDirectory,"manifest.xml"), manifest.ToString());
 
             Package packager = new Package();
-            await packager.ZipDirectory(tmpDirectory, destinationDirectory, Package.PackageFilenameWithExtension(prefix,majorVersion, minorVersion));
+            await packager.ZipDirectory(tmpDirectory, destinationDirectory, packageNameWithExtension);
             await Task.Run(() =>
             {
                 string[] files = Directory.GetFiles(tmpDirectory);
@@ -113,6 +140,12 @@ namespace Codenesium.PackageManagement
             });
         }
 
+        /// <summary>
+        /// Copies a list of files to a directory
+        /// </summary>
+        /// <param name="fileList"></param>
+        /// <param name="tmpDirectory"></param>
+        /// <returns></returns>
         private async Task CopyFilesToTempDirectory(List<ManifestFile> fileList, string tmpDirectory)
         {
             await Task.Run(() =>

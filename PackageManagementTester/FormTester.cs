@@ -59,7 +59,7 @@ namespace Codenesium.PackageManagementTester
         private async void buttonCreatePackageWithManifest_Click(object sender, EventArgs e)
         {
             ManifestPackager packager = new ManifestPackager();
-            await packager.CreatePackage(textBoxInputDirectory.Text, textBoxOutputDirectory.Text, textBoxtTempDirectory.Text, textBoxPrefix.Text, textBoxMajorVersion.Text, textBoxMinorVersion.Text)
+            await packager.CreatePackage(textBoxInputDirectory.Text, textBoxOutputDirectory.Text, textBoxtTempDirectory.Text, Package.PackageFilenameWithExtension(textBoxPrefix.Text, textBoxMajorVersion.Text, textBoxMinorVersion.Text))
                    .ContinueWith(x => MessageBox.Show("Complete!"));
         }
     }
