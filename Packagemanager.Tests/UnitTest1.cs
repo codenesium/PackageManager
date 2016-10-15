@@ -14,16 +14,15 @@ namespace Packagemanager.Tests
         [TestMethod]
         public void PackageFilename()
         {
-            string name = Package.PackageFilenameWithExtension("Package_", "2016", "3");
-            string testName = "Package_2016.3." + DateTime.Now.ToString("Mdd") + "." + DateTime.Now.ToString("Hmm") + ".zip";
+            string name = Package.PackageFilenameWithExtension("Package", "2016", "3");
+            string testName = "Package.2016.3." + DateTime.Now.ToString("Mdd") + "." + DateTime.Now.ToString("Hmm") + ".zip";
 
             Assert.AreEqual(name, testName);
         }
 
         [TestMethod]
-        public  void CreateAndExtractPackageWithManifest()
+        public void CreateAndExtractPackageWithManifest()
         {
-
             var baseDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var inputDirectory = Path.Combine(baseDir, "input");
             var createPackageOutput = Path.Combine(baseDir, "CreatePackageOutput");
@@ -60,8 +59,9 @@ namespace Packagemanager.Tests
 
             var task = Task.Run(async () =>
             {
-               await packager.CreatePackage(inputDirectory, createPackageOutput, tmpDirectory, packageName);
-            }).ContinueWith( async action => {  
+                await packager.CreatePackage(inputDirectory, createPackageOutput, tmpDirectory, packageName);
+            }).ContinueWith(async action =>
+            {
                 string filename = Path.Combine(createPackageOutput, packageName);
                 await packager.ExtractPackage(filename, extractPackageOutput, tmpDirectory);
                 VerifyTestFiles(extractPackageOutput);
@@ -76,7 +76,7 @@ namespace Packagemanager.Tests
             string sub1 = Path.Combine(rootDirectory, "sub1");
             string sub2 = Path.Combine(rootDirectory, "sub2");
 
-            string sub1A = Path.Combine(rootDirectory, "sub1","A");
+            string sub1A = Path.Combine(rootDirectory, "sub1", "A");
             string sub2A = Path.Combine(rootDirectory, "sub2", "A");
 
             Directory.CreateDirectory(sub1);
@@ -86,7 +86,6 @@ namespace Packagemanager.Tests
 
             File.WriteAllText(Path.Combine(sub1, "1.txt"), "test");
             File.WriteAllText(Path.Combine(sub1A, "2.txt"), "test");
-
         }
 
         private void DeleteFolder(string FolderName)
@@ -108,12 +107,12 @@ namespace Packagemanager.Tests
 
         private void VerifyTestFiles(string rootDirectory)
         {
-            Assert.IsTrue(Directory.Exists(Path.Combine(rootDirectory,"input", "sub1")));
+            Assert.IsTrue(Directory.Exists(Path.Combine(rootDirectory, "input", "sub1")));
             Assert.IsTrue(Directory.Exists(Path.Combine(rootDirectory, "input", "sub2")));
-            Assert.IsTrue(Directory.Exists(Path.Combine(rootDirectory, "input", "sub1","A")));
-            Assert.IsTrue(Directory.Exists(Path.Combine(rootDirectory, "input", "sub2","A")));
-            Assert.IsTrue(File.Exists(Path.Combine(rootDirectory, "input", "sub1","1.txt")));
-            Assert.IsTrue(File.Exists(Path.Combine(rootDirectory, "input", "sub1","A", "2.txt")));
+            Assert.IsTrue(Directory.Exists(Path.Combine(rootDirectory, "input", "sub1", "A")));
+            Assert.IsTrue(Directory.Exists(Path.Combine(rootDirectory, "input", "sub2", "A")));
+            Assert.IsTrue(File.Exists(Path.Combine(rootDirectory, "input", "sub1", "1.txt")));
+            Assert.IsTrue(File.Exists(Path.Combine(rootDirectory, "input", "sub1", "A", "2.txt")));
         }
     }
 }

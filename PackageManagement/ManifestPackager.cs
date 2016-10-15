@@ -10,13 +10,12 @@ namespace Codenesium.PackageManagement
 {
     public class ManifestPackager
     {
-
-        List<ManifestFile> _fileList = new List<ManifestFile>();
-        string _tmpDirectory;
-        string _destinationDirectory;
+        private List<ManifestFile> _fileList = new List<ManifestFile>();
+        private string _tmpDirectory;
+        private string _destinationDirectory;
 
         /// <summary>
-        /// Extracts the specified input zip file to the specified tmp directory and then rebuilds the 
+        /// Extracts the specified input zip file to the specified tmp directory and then rebuilds the
         /// folder structure in the destination directory using the manifest contained in the package.
         /// </summary>
         /// <param name="inputFilename"></param>
@@ -46,18 +45,21 @@ namespace Codenesium.PackageManagement
                 this._fileList.Add(newFile);
             }
 
-             IterateAndCreateDirectoryStructure(this._destinationDirectory,manifest);
-             IterateAndCreateFileStructure(this._destinationDirectory, manifest);
-             await Task.Run(() =>
-             {
+            IterateAndCreateDirectoryStructure(this._destinationDirectory, manifest);
+            IterateAndCreateFileStructure(this._destinationDirectory, manifest);
+            await Task.Run(() =>
+            {
                 string[] files = Directory.GetFiles(tmpDirectory);
                 foreach (string file in files)
                 {
-                    File.Delete(file);
+                    if (Path.GetExtension(file) == String.Empty || Path.GetFileNameWithoutExtension(file).ToUpper() == "MANIFEST")
+                    {
+                        //this allows us to use the destination directory as the temp directory. The user shouldn't have files without an extension.
+                        File.Delete(file);
+                    }
                 }
             });
         }
-
 
         /// <summary>
         /// Uses a manifest definition file to rebuild the directory structure contained in the manifest
@@ -101,7 +103,7 @@ namespace Codenesium.PackageManagement
                 string key = file.Attribute("key").Value;
 
                 ManifestFile mainfestFile = this._fileList.Where(x => x.Key == key).FirstOrDefault();
-                File.Copy(Path.Combine(this._tmpDirectory, mainfestFile.Key), Path.Combine(path, mainfestFile.Name),true);
+                File.Copy(Path.Combine(this._tmpDirectory, mainfestFile.Key), Path.Combine(path, mainfestFile.Name), true);
             }
 
             foreach (XElement subDirectory in directory.Elements("directory"))
@@ -109,16 +111,17 @@ namespace Codenesium.PackageManagement
                 IterateAndCreateFileStructure(path, subDirectory);
             }
         }
+
         /// <summary>
         /// Creates a zip package with a manifest from an input directory.
-        /// 
+        ///
         /// </summary>
         /// <param name="inputDirectory">The directory you want to zip</param>
         /// <param name="destinationDirectory">The destination of the zip file</param>
         /// <param name="tmpDirectory">The directory where renamed files will be copied while zipping</param>
         /// <param name="packageNameWithExtension">The name of the zip file</param>
         /// <returns></returns>
-        public async Task CreatePackage(string inputDirectory,string destinationDirectory, string tmpDirectory, string packageNameWithExtension)
+        public async Task CreatePackage(string inputDirectory, string destinationDirectory, string tmpDirectory, string packageNameWithExtension)
         {
             ManifestBuilder builder = new ManifestBuilder();
             List<ManifestFile> fileList = builder.BuildFileList(inputDirectory);
@@ -126,16 +129,20 @@ namespace Codenesium.PackageManagement
             await CopyFilesToTempDirectory(fileList, tmpDirectory);
 
             XElement manifest = builder.BuildManifest(inputDirectory);
-            File.WriteAllText(Path.Combine(tmpDirectory,"manifest.xml"), manifest.ToString());
+            File.WriteAllText(Path.Combine(tmpDirectory, "manifest.xml"), manifest.ToString());
 
             Package packager = new Package();
             await packager.ZipDirectory(tmpDirectory, destinationDirectory, packageNameWithExtension);
             await Task.Run(() =>
             {
                 string[] files = Directory.GetFiles(tmpDirectory);
-                foreach(string file in files)
+                foreach (string file in files)
                 {
-                    File.Delete(file);
+                    if (Path.GetExtension(file) == String.Empty || Path.GetFileNameWithoutExtension(file).ToUpper() == "MANIFEST")
+                    {
+                        //this allows us to use the destination directory as the temp directory. The user shouldn't have files without an extension.
+                        File.Delete(file);
+                    }
                 }
             });
         }
@@ -155,7 +162,6 @@ namespace Codenesium.PackageManagement
                     File.Copy(file.FileLocation, Path.Combine(tmpDirectory, file.Key), true);
                 }
             });
-
         }
     }
 }

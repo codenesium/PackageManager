@@ -1,0 +1,257 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<projects>
+  <globals />
+  <project>
+    <deleteDirectories />
+    <name>PNCPackage</name>
+    <copyTasks>
+      <copyTask>
+        <name>Controllers</name>
+        <isDirectory>true</isDirectory>
+        <description>Copy controllers to foundation</description>
+        <source>$(RepositoryRootDirectory)\PhoneNumberCard\PNCControllers\bin\Debug</source>
+        <destinations>
+          <destination>$(OutputDirectory)\bin</destination>
+        </destinations>
+      </copyTask>
+      <copyTask>
+        <name>Repository</name>
+        <isDirectory>true</isDirectory>
+        <description>Copy repository to foundation</description>
+        <source>$(RepositoryRootDirectory)\PhoneNumberCard\PNCRepository\bin\Debug</source>
+        <destinations>
+          <destination>$(OutputDirectory)\bin</destination>
+        </destinations>
+      </copyTask>
+    </copyTasks>
+  </project>
+  <project>
+    <deleteDirectories />
+    <name>PNCDebug</name>
+    <copyTasks>
+      <copyTask>
+        <name>Controllers</name>
+        <isDirectory>true</isDirectory>
+        <description>Copy controllers to foundation</description>
+        <source>$(RepositoryRootDirectory)\PhoneNumberCard\PNCControllers\bin\Debug</source>
+        <destinations>
+          <destination>$(OutputDirectory)\bin</destination>
+        </destinations>
+      </copyTask>
+      <copyTask>
+        <name>Repository</name>
+        <isDirectory>true</isDirectory>
+        <description>Copy repository to foundation</description>
+        <source>$(RepositoryRootDirectory)\PhoneNumberCard\PNCRepository\bin\Debug</source>
+        <destinations>
+          <destination>$(OutputDirectory)\bin</destination>
+        </destinations>
+      </copyTask>
+    </copyTasks>
+  </project>
+  <project>
+    <name>FermataFishPackage</name>
+    <deleteDirectories />
+    <copyTasks>
+      <copyTask>
+        <name>Website</name>
+        <isDirectory>true</isDirectory>
+        <description>Copy website dlls to foundation</description>
+        <source>$(RepositoryRootDirectory)\FoundationWeb\FermataFish\FFWebsite\bin</source>
+        <destinations>
+          <destination>$(OutputDirectory)\bin</destination>
+        </destinations>
+      </copyTask>
+      <copyTask>
+        <name>Views</name>
+        <isDirectory>true</isDirectory>
+        <description>Copy views to foundation</description>
+        <source>$(RepositoryRootDirectory)\FoundationWeb\FermataFish\FFWebsite\Views</source>
+        <destinations>
+          <destination>$(OutputDirectory)\Views</destination>
+        </destinations>
+      </copyTask>
+      <copyTask>
+        <name>Fonts</name>
+        <isDirectory>true</isDirectory>
+        <description>Copy fonts to foundation</description>
+        <source>$(RepositoryRootDirectory)\FoundationWeb\FermataFish\FFWebsite\fonts</source>
+        <destinations>
+          <destination>$(OutputDirectory)\fonts</destination>
+        </destinations>
+      </copyTask>
+      <copyTask>
+        <name>Scripts</name>
+        <isDirectory>true</isDirectory>
+        <description>Copy scripts to foundation</description>
+        <source>$(RepositoryRootDirectory)\FoundationWeb\FermataFish\FFWebsite\Scripts\build</source>
+        <destinations>
+          <destination>$(OutputDirectory)\Scripts\build</destination>
+        </destinations>
+      </copyTask>
+      <copyTask>
+        <name>CSS</name>
+        <isDirectory>true</isDirectory>
+        <description>Copy css to foundation</description>
+        <source>$(RepositoryRootDirectory)\FoundationWeb\FermataFish\FFWebsite\Content</source>
+        <destinations>
+          <destination>$(OutputDirectory)\Content</destination>
+        </destinations>
+      </copyTask>
+    </copyTasks>
+  </project>
+  <project>
+    <name>FermataFishDebug</name>
+    <deleteDirectories />
+    <copyTasks>
+      <copyTask>
+        <name>Website</name>
+        <isDirectory>true</isDirectory>
+        <description>Copy website dlls to foundation</description>
+        <source>      $(RepositoryRootDirectory)\FoundationWeb\FermataFish\FFWebsite\bin</source>
+        <destinations>
+          <destination>$(OutputDirectory)\bin</destination>
+        </destinations>
+      </copyTask>
+      <copyTask>
+        <name>Views</name>
+        <isDirectory>true</isDirectory>
+        <description>Copy views to foundation</description>
+        <source>$(RepositoryRootDirectory)\FoundationWeb\FermataFish\FFWebsite\Views</source>
+        <destinations>
+          <destination>$(OutputDirectory)\Views</destination>
+        </destinations>
+      </copyTask>
+      <copyTask>
+        <name>Fonts</name>
+        <isDirectory>true</isDirectory>
+        <description>Copy fonts to foundation</description>
+        <source>$(RepositoryRootDirectory)\FoundationWeb\FermataFish\FFWebsite\fonts</source>
+        <destinations>
+          <destination>$(OutputDirectory)\fonts</destination>
+        </destinations>
+      </copyTask>
+      <copyTask>
+        <name>Scripts</name>
+        <isDirectory>true</isDirectory>
+        <description>Copy scripts to foundation</description>
+        <source>$(RepositoryRootDirectory)\FoundationWeb\FermataFish\FFWebsite\Scripts\build</source>
+        <destinations>
+          <destination>$(OutputDirectory)\Scripts\build</destination>
+        </destinations>
+      </copyTask>
+      <copyTask>
+        <name>CSS</name>
+        <isDirectory>true</isDirectory>
+        <description>Copy css to foundation</description>
+        <source>$(RepositoryRootDirectory)\FoundationWeb\FermataFish\FFWebsite\Content</source>
+        <destinations>
+          <destination>$(OutputDirectory)\Content</destination>
+        </destinations>
+      </copyTask>
+    </copyTasks>
+  </project>
+  <project>
+    <name>FoundationPackage</name>
+    <deleteDirectories>
+      <directory>$(OutputDirectory)</directory>
+    </deleteDirectories>
+    <copyTasks>
+      <copyTask>
+        <name>Website</name>
+        <isDirectory>true</isDirectory>
+        <description>Copy website dlls</description>
+        <source>$(RepositoryRootDirectory)\FoundationWeb\FoundationWebsite\bin</source>
+        <destinations>
+          <destination>$(OutputDirectory)\bin</destination>
+        </destinations>
+      </copyTask>
+      <copyTask>
+        <name>Fonts</name>
+        <isDirectory>true</isDirectory>
+        <description>Copy Fonts</description>
+        <source>$(RepositoryRootDirectory)\FoundationWeb\FoundationWebsite\fonts</source>
+        <destinations>
+          <destination>$(OutputDirectory)\fonts</destination>
+        </destinations>
+      </copyTask>
+      <copyTask>
+        <name>Views</name>
+        <isDirectory>true</isDirectory>
+        <description>Copy views</description>
+        <source>$(RepositoryRootDirectory)\FoundationWeb\FoundationWebsite\Views</source>
+        <destinations>
+          <destination>$(OutputDirectory)\Views</destination>
+        </destinations>
+      </copyTask>
+      <copyTask>
+        <name>Scripts</name>
+        <isDirectory>true</isDirectory>
+        <description>Copy scripts</description>
+        <source>$(RepositoryRootDirectory)\FoundationWeb\FoundationWebsite\Scripts</source>
+        <destinations>
+          <destination>$(OutputDirectory)\Scripts</destination>
+        </destinations>
+      </copyTask>
+      <copyTask>
+        <name>CSS</name>
+        <isDirectory>true</isDirectory>
+        <description>Copy css</description>
+        <source>$(RepositoryRootDirectory)\FoundationWeb\FoundationWebsite\Content</source>
+        <destinations>
+          <destination>$(OutputDirectory)\Content</destination>
+        </destinations>
+      </copyTask>
+      <copyTask>
+        <name>Web.Config</name>
+        <isDirectory>false</isDirectory>
+        <description>Copy web.config</description>
+        <source>$(RepositoryRootDirectory)\FoundationWeb\FoundationWebsite\web.config</source>
+        <destinations>
+          <destination>$(OutputDirectory)\Web.Config</destination>
+        </destinations>
+      </copyTask>
+      <copyTask>
+        <name>Global.asax</name>
+        <isDirectory>false</isDirectory>
+        <description>Copy Global.asax</description>
+        <source>$(RepositoryRootDirectory)\FoundationWeb\FoundationWebsite\Global.asax</source>
+        <destinations>
+          <destination>$(OutputDirectory)\Global.asax</destination>
+        </destinations>
+      </copyTask>
+    </copyTasks>
+  </project>
+  <project>
+    <name>FoundationDeploy</name>
+    <deleteDirectories>
+      <directory>$(OutputDirectory)</directory>
+    </deleteDirectories>
+    <copyTasks>
+      <copyTask>
+        <name>Publish</name>
+        <isDirectory>true</isDirectory>
+        <description>Publish Site</description>
+        <source>$(SourceDirectory)</source>
+        <destinations>
+          <destination>$(OutputDirectory)</destination>
+        </destinations>
+      </copyTask>
+    </copyTasks>
+  </project>
+  <project>
+    <name>FoundationCommonFiles</name>
+    <deleteDirectories />
+    <copyTasks>
+      <copyTask>
+        <name>Lib TSX files</name>
+        <isDirectory>true</isDirectory>
+        <description>Copy foundation common tsx files to child project</description>
+        <source>$(SourceDirectory)</source>
+        <destinations>
+          <destination>$(OutputDirectory)</destination>
+        </destinations>
+      </copyTask>
+    </copyTasks>
+  </project>
+</projects>
