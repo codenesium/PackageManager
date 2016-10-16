@@ -14,7 +14,7 @@ The entire chain looks like this.
 I combine these different actions using a powershell script I run from Visual Studio to have a one click build and deploy.
 
 
-There are several projects in the solution. I will try to give a useful summary
+There are several projects in the solution.
 
 ##BuildCopyLib
 Library of file copy functions
