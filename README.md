@@ -16,32 +16,32 @@ I combine these different actions using a powershell script I run from Visual St
 
 There are several projects in the solution. I will try to give a useful summary
 
-**BuildCopyLib
+##BuildCopyLib
 Library of file copy functions
 
-**BuildCopyUtility
+##BuildCopyUtility
 Command line utility that uses a config file to copy files around.
 
-**ConnectionStringUtility
+##ConnectionStringUtility
 Opens an xml file and replaces a value. I use it for connection string replacement.
 
-**ConsolePackager
+##ConsolePackager
 Uses command line arguments to create a minified zip file from a directory
 
-**DeploymentService
+##DeploymentService
 Windows service that runs on a server. It monitors a directory for zip files and then extracts/recombines/moves
 them to the correct directories.
 
-**PackageManagementLib
+##PackageManagementLib
 Library of functionality to create and extract minified zip files
 
-**PackageManagementTester
+##PackageManagementTester
 Windows form tester for the PackageManagementLib
 
 
 
 
-**TODO
+##TODO
 Currently the deployment service does not copy the extracted files to your web directory and it doesn't
 take the site offline in a nice way. I intend to make it backup your web directory. Then take your site offline with
 an offline htm file then have it copy the files over and bring the site back online. This is a planned feature.
