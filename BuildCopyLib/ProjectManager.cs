@@ -7,7 +7,7 @@ using System.IO;
 using System.Xml.Linq;
 using NLog;
 
-namespace Codenesium.PackageManagement.BuildCopyUtility
+namespace Codenesium.PackageManagement.BuildCopyLib
 {
     public class ProjectManager
     {

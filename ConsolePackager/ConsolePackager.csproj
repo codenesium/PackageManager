@@ -55,9 +55,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PackageManagement\PackageManagement.csproj">
+    <ProjectReference Include="..\PackageManagementLib\PackageManagementLib.csproj">
       <Project>{849c6645-0c2f-4372-954d-b98f020901aa}</Project>
-      <Name>PackageManagement</Name>
+      <Name>PackageManagementLib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

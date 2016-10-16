@@ -6,24 +6,25 @@ using System.Threading.Tasks;
 using NLog;
 using CommandLine;
 using CommandLine.Text;
+using Codenesium.PackageManagement.BuildCopyLib;
 
 namespace Codenesium.PackageManagement.BuildCopyUtility
 {
     internal class Options
     {
-        [Option('p', "Project Name", Required = true,
+        [Option("ProjectName", Required = true,
           HelpText = "The project name. Should match a project in the config.xml.")]
         public string ProjectName { get; set; }
 
-        [Option('o', "Output Directory", Required = true,
+        [Option("OutputDirectory", Required = true,
        HelpText = "The directory where the output will be copied.")]
         public string OutputDirectory { get; set; }
 
-        [Option('r', "Repository root directory",
+        [Option("RepositoryRootDirectory",
         HelpText = "Optional. The root directory of your repository. This can be referenced in your config.xml")]
         public string RepositoryRootDirectory { get; set; }
 
-        [Option('s', "Source directory",
+        [Option("SourceDirectory",
         HelpText = "Optional. Any directory that you reference in your conifig.xml.")]
         public string SourceDirectory { get; set; }
     }

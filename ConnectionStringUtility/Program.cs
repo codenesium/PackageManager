@@ -12,17 +12,17 @@ namespace Codenesium.PackageManagement.ConnectionStringUtility
 {
     internal class Options
     {
-        [Option('f', "Input Filename", Required = true,
+        [Option("InputFilename", Required = true,
           HelpText = "The input filename to modify")]
-        public string InputFile { get; set; }
+        public string InputFilename { get; set; }
 
-        [Option('r', "XML Node", Required = true,
+        [Option("XMLNode", Required = true,
        HelpText = "the node name to replace the value of")]
-        public string ReplaceNode { get; set; }
+        public string XMLNode { get; set; }
 
-        [Option('v', "Replacement Value", Required = true,
+        [Option("ReplacementValue", Required = true,
         HelpText = "the value to replace with")]
-        public string ReplaceValue { get; set; }
+        public string ReplacementValue { get; set; }
     }
 
     internal class Program
@@ -37,17 +37,17 @@ namespace Codenesium.PackageManagement.ConnectionStringUtility
           Console.WriteLine(arg);
       }
 
-      if (!File.Exists(options.InputFile))
+      if (!File.Exists(options.InputFilename))
       {
-          Console.WriteLine("The supplied file {0} does not exist", options.InputFile);
+          Console.WriteLine("The supplied file {0} does not exist", options.InputFilename);
           Environment.Exit(-1);
       }
       try
       {
-          XDocument xDoc = XDocument.Load(options.InputFile);
+          XDocument xDoc = XDocument.Load(options.InputFilename);
 
           var connectionString = (from c in xDoc.Descendants("connectionStrings").Descendants("add")
-                                  where c.Attribute("name").Value.ToString().ToUpper() == options.ReplaceNode
+                                  where c.Attribute("name").Value.ToString().ToUpper() == options.XMLNode
                                   select c).FirstOrDefault();
 
           if (connectionString == null)
@@ -56,14 +56,14 @@ namespace Codenesium.PackageManagement.ConnectionStringUtility
               Environment.Exit(-1);
           }
 
-          connectionString.Attribute("connectionString").Value = options.ReplaceValue;
-          xDoc.Save(options.InputFile);
+          connectionString.Attribute("connectionString").Value = options.ReplacementValue;
+          xDoc.Save(options.InputFilename);
           Console.WriteLine("Connection strings replaced successfully");
           Environment.Exit(0);
       }
       catch (Exception ex)
       {
-          Console.WriteLine("Exception changing the connection string file:{0} exception{1}", options.InputFile, ex.ToString());
+          Console.WriteLine("Exception changing the connection string file:{0} exception{1}", options.InputFilename, ex.ToString());
           Environment.Exit(-1);
       }
   }).WithNotParsed(errors => { });

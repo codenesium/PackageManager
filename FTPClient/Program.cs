@@ -12,29 +12,29 @@ namespace FTPClient
 {
     internal class Options
     {
-        [Option('u', "ftp username", Required = true,
+        [Option("Username", Required = true,
           HelpText = "The ftp username")]
         public string Username { get; set; }
 
-        [Option('p', "ftp password", Required = true,
+        [Option("Password", Required = true,
   HelpText = "The ftp password")]
         public string Password { get; set; }
 
-        [Option('s', "The ftp server uri ", Required = true,
+        [Option("Server", Required = true,
 HelpText = "The ftp server uri in the format ftp://WEBSERVER")]
         public string Server { get; set; }
 
-        [Option('l', "local filename", Required = true,
+        [Option("LocalFilename", Required = true,
 HelpText = "The local file to upload")]
         public string LocalFilename { get; set; }
 
-        [Option('r', "remote temp filename", Required = true,
+        [Option("RemoteTempFilename", Required = true,
 HelpText = "The name of the upload on the server before it is complete")]
         public string RemoteTempFilename { get; set; }
 
-        [Option('q', "remote final filename", Required = true,
+        [Option("RemoteFinalFilename", Required = true,
 HelpText = "The name the file will be renamed to when the upload is complete")]
-        public string RemoteCompleteFilename { get; set; }
+        public string RemoteFinalFilename { get; set; }
     }
 
     internal class Program
@@ -55,8 +55,10 @@ HelpText = "The name the file will be renamed to when the upload is complete")]
                         client.Credentials = new NetworkCredential(options.Username, options.Password);
                         Uri remoteTempFilename = new Uri(new Uri(options.Server), options.RemoteTempFilename);
                         client.UploadFile(remoteTempFilename, "STOR", options.LocalFilename);
-                        RenameFileName(options.Username, options.Password, remoteTempFilename, options.RemoteCompleteFilename);
+                        RenameFileName(options.Username, options.Password, remoteTempFilename, options.RemoteFinalFilename);
                     }
+
+                    Console.WriteLine("FTP complete");
                 })
                 .WithNotParsed(errors => { });
             }

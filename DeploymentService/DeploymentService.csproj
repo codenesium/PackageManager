@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Codenesium.PackageManagement.DeploymentService</RootNamespace>
-    <AssemblyName>Codenesium.PackageManagement.DeploymentService</AssemblyName>
+    <AssemblyName>DeploymentService</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -71,9 +71,13 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PackageManagement\PackageManagement.csproj">
+    <ProjectReference Include="..\BuildCopyLib\BuildCopyLib.csproj">
+      <Project>{5a18e053-bc61-47e2-a6d4-4bcfafc6b0fb}</Project>
+      <Name>BuildCopyLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PackageManagementLib\PackageManagementLib.csproj">
       <Project>{849c6645-0c2f-4372-954d-b98f020901aa}</Project>
-      <Name>PackageManagement</Name>
+      <Name>PackageManagementLib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

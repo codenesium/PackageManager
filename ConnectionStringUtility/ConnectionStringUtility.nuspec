@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Codenesium.ConnectionStringUtility</id>
-    <version>1.0</version>
+    <version>1.0-Beta</version>
     <title>ConnectionStringUtility</title>
 		<description>none</description>
     <authors>Codenesium LLC</authors>

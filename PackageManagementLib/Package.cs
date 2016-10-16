@@ -22,11 +22,11 @@ namespace Codenesium.PackageManagement
                 throw new FileNotFoundException("Input filename was not found " + inputFilename);
             }
 
-            await Task.Factory.StartNew(() =>
+            await Task.Run(() =>
             {
                 using (ZipFile zip = ZipFile.Read(inputFilename))
                 {
-                    zip.ExtractAll(outputDirectory);
+                    zip.ExtractAll(outputDirectory, ExtractExistingFileAction.OverwriteSilently);
                 }
             });
         }

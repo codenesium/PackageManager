@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using NLog;
 
-namespace Codenesium.PackageManagement.BuildCopyUtility
+namespace Codenesium.PackageManagement.BuildCopyLib
 {
     public class CopyDir
     {

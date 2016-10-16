@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Codenesium.PackageManagement;
+
 namespace Codenesium.PackageManagementTester
 {
     public partial class FormTester : Form
@@ -29,7 +29,7 @@ namespace Codenesium.PackageManagementTester
         private async void buttonCreatePackage_Click(object sender, EventArgs e)
         {
             Package packageManager = new Package();
-            await packageManager.ZipDirectory(textBoxInputDirectory.Text, textBoxOutputDirectory.Text, Package.PackageFilenameWithExtension(textBoxPrefix.Text,textBoxMajorVersion.Text,textBoxMinorVersion.Text))
+            await packageManager.ZipDirectory(textBoxInputDirectory.Text, textBoxOutputDirectory.Text, Package.PackageFilenameWithExtension(textBoxPrefix.Text, textBoxMajorVersion.Text, textBoxMinorVersion.Text))
                 .ContinueWith(x => MessageBox.Show("Complete!"));
         }
 
@@ -47,7 +47,6 @@ namespace Codenesium.PackageManagementTester
             await packageManager.UnZipDirectory(textBoxPackageFile.Text, textBoxExtractOutputDirectory.Text)
                 .ContinueWith(x => MessageBox.Show("Complete!"));
         }
-
 
         private async void buttonExtractPackageWithManifest_Click(object sender, EventArgs e)
         {

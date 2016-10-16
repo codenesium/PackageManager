@@ -2,8 +2,7 @@
 <package >
   <metadata>
     <id>Codenesium.FTPClient</id>
-    <version>1.0</version>
-    <title>FTPClient</title>
+    <version>1.0-Beta</version>
 		<description>none</description>
     <authors>Codenesium LLC</authors>
     <owners>Codenesium LLC</owners>
