@@ -13,6 +13,12 @@ The entire chain looks like this.
 
 I combine these different actions using a powershell script I run from Visual Studio to have a one click build and deploy.
 
+To use the projects I suggest 
+
+1. Building these projects as nuget packages using the BuildNugetPackages.bat
+2. Creating a nuget package source in Visual Studio and pointing it to the nuget output
+3. Adding a reference to these packages in your solution.
+4  Creating a powershell script to combine the various pieces to fit your needs referencing the executables in the packages folder in your solution
 
 There are several projects in the solution.
 
@@ -20,7 +26,7 @@ There are several projects in the solution.
 Library of file copy functions
 
 ##BuildCopyUtility
-Command line utility that uses a config file to copy files around.
+Command line utility that uses a config file to copy files around. 
 
 ##ConnectionStringUtility
 Opens an xml file and replaces a value. I use it for connection string replacement.
