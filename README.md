@@ -4,37 +4,38 @@ This repo is a collection of tools for deploying software on windows.
 The entire chain looks like this.
 
 Build your software
-Use the BuildCopyUtility to combine the files into a deployable directory structure
-Use the ConnectionStringUtility to replace the connection strings for production
-Use the ConsolePackager to package this directory into a minified zip file
-Transfer the zip file using the FTPClient
-Extract and deploy the zip file using the deployment service which runs on your server
+1. Use the BuildCopyUtility to combine the files into a deployable directory structure
+2. Use the ConnectionStringUtility to replace the connection strings for production
+3. Use the ConsolePackager to package this directory into a minified zip file
+4. Update your database using FluentDatabase or some other tool
+4. Transfer the zip file using the FTPClient
+5. Extract and deploy the zip file using the deployment service which runs on your server
 
 I combine these different actions using a powershell script I run from Visual Studio to have a one click build and deploy.
 
 
 There are several projects in the solution. I will try to give a useful summary
 
-BuildCopyLib
+* BuildCopyLib
 Library of file copy functions
 
-BuildCopyUtility
+* BuildCopyUtility
 Command line utility that uses a config file to copy files around.
 
-ConnectionStringUtility
+* ConnectionStringUtility
 Opens an xml file and replaces a value. I use it for connection string replacement.
 
-ConsolePackager
+* ConsolePackager
 Uses command line arguments to create a minified zip file from a directory
 
-DeploymentService
+* DeploymentService
 Windows service that runs on a server. It monitors a directory for zip files and then extracts/recombines/moves
 them to the correct directories.
 
-PackageManagementLib
+*PackageManagementLib
 Library of functionality to create and extract minified zip files
 
-PackageManagementTester
+*PackageManagementTester
 Windows form tester for the PackageManagementLib
 
 
