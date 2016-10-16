@@ -18,9 +18,8 @@ To use the projects I suggest
 1. Building these projects as nuget packages using the BuildNugetPackages.bat
 2. Creating a nuget package source in Visual Studio and pointing it to the nuget output
 3. Adding a reference to these packages in your solution.
-4  Creating a powershell script to combine the various pieces to fit your needs referencing the executables in the packages folder in your solution
+4. Creating a powershell script to combine the various pieces to fit your needs referencing the executables in the packages folder in your solution
 
-There are several projects in the solution.
 
 ##BuildCopyLib
 Library of file copy functions
