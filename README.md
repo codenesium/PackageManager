@@ -3,13 +3,13 @@ This repo is a collection of tools for deploying software on windows.
 
 The entire chain looks like this.
 
-Build your software
-1. Use the BuildCopyUtility to combine the files into a deployable directory structure
-2. Use the ConnectionStringUtility to replace the connection strings for production
-3. Use the ConsolePackager to package this directory into a minified zip file
-4. Update your database using FluentDatabase or some other tool
-4. Transfer the zip file using the FTPClient
-5. Extract and deploy the zip file using the deployment service which runs on your server
+1. Build your software
+2. Use the BuildCopyUtility to combine the files into a deployable directory structure
+3. Use the ConnectionStringUtility to replace the connection strings for production
+4. Use the ConsolePackager to package this directory into a minified zip file
+5. Update your database using FluentDatabase or some other tool
+6. Transfer the zip file using the FTPClient
+7. Extract and deploy the zip file using the deployment service which runs on your server
 
 I combine these different actions using a powershell script I run from Visual Studio to have a one click build and deploy.
 
