@@ -1,17 +1,48 @@
 # PackageManager
-This library creates minified zip files representing a directory structure.
+This repo is a collection of tools for deploying software on windows.
 
-The primary use case is deploying a zip file for a software deployment of some kind but anywhere a compact representation of a directory structure is needed would
-be valid. 
+The entire chain looks like this.
 
-When creating a package the library will iterate the directory tree of the passed directory and build an xml file manifest of 
-the entire structure. This includes the folders and files. 
+Build your software
+Use the BuildCopyUtility to combine the files into a deployable directory structure
+Use the ConnectionStringUtility to replace the connection strings for production
+Use the ConsolePackager to package this directory into a minified zip file
+Transfer the zip file using the FTPClient
+Extract and deploy the zip file using the deployment service which runs on your server
 
-It then moves all unique files to a temp directory and zips all of the files along with the manifest.
+I combine these different actions using a powershell script I run from Visual Studio to have a one click build and deploy.
 
-When extracting it unzips the package and uses the manifest to recreate the directory structure and then populates that structure 
-with the required files.
 
-This way even if the same file is found in multiple places in the structure the file only exists in the package once.
-This is accomplished by taking an MD5 hash of each file and only adding unique files to the package. 
+There are several projects in the solution. I will try to give a useful summary
+
+BuildCopyLib
+Library of file copy functions
+
+BuildCopyUtility
+Command line utility that uses a config file to copy files around.
+
+ConnectionStringUtility
+Opens an xml file and replaces a value. I use it for connection string replacement.
+
+ConsolePackager
+Uses command line arguments to create a minified zip file from a directory
+
+DeploymentService
+Windows service that runs on a server. It monitors a directory for zip files and then extracts/recombines/moves
+them to the correct directories.
+
+PackageManagementLib
+Library of functionality to create and extract minified zip files
+
+PackageManagementTester
+Windows form tester for the PackageManagementLib
+
+
+
+
+TODO
+Currently the deployment service does not copy the extracted files to your web directory and it doesn't
+take the site offline in a nice way. I intend to make it backup your web directory. Then take your site offline with
+an offline htm file then have it copy the files over and bring the site back online. This is a planned feature.
+
 
