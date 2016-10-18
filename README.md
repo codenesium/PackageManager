@@ -46,9 +46,5 @@ Windows form tester for the PackageManagementLib
 
 
 
-##TODO
-Currently the deployment service does not copy the extracted files to your web directory and it doesn't
-take the site offline in a nice way. I intend to make it backup your web directory. Then take your site offline with
-an offline htm file then have it copy the files over and bring the site back online. This is a planned feature.
 
 
