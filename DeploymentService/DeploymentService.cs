@@ -11,6 +11,11 @@ using NLog;
 using System.IO;
 using Codenesium.PackageManagement;
 using System.Configuration;
+using System.Timers;
+using Codenesium.PackageManagement.DeploymentService;
+using System.Reflection;
+using System.Xml.Linq;
+using Codenesium.PackageManagement.BuildCopyLib;
 
 namespace DeploymentService
 {
@@ -19,8 +24,9 @@ namespace DeploymentService
         private string _tmpDirectory;//files being extracted go here
         private string _monitorDirectory;//we monitor this directory for zip files
         private string _extractDirectory;//where the rebuilt packages will go
-        private FileSystemWatcher _fileSystemMonitor;
+        private Timer _fileWatcher;
         protected static Logger _logger = LogManager.GetCurrentClassLogger();
+        private List<Project> _projects;
         private Dictionary<string, DateTime> _fileProcessedDictionary = new Dictionary<string, DateTime>();
 
         public DeploymentService()
@@ -41,24 +47,17 @@ namespace DeploymentService
             LoadSettings();
             _logger.Info("Service started");
             _logger.Info("Settings _tmpDirectory={0},_monitorDirectory={1},_extractDirectory={2}", this._tmpDirectory, this._monitorDirectory, this._extractDirectory);
-            this._fileSystemMonitor = new FileSystemWatcher(this._monitorDirectory, "*.zip");
-            this._fileSystemMonitor.Changed += FileSystemWatcherBuilds_Changed;
-            this._fileSystemMonitor.Renamed += _fileSystemMonitor_Renamed;
-            this._fileSystemMonitor.EnableRaisingEvents = true;
-            this._fileSystemMonitor.NotifyFilter = NotifyFilters.Attributes |
-    NotifyFilters.CreationTime |
-    NotifyFilters.FileName |
-    NotifyFilters.LastAccess |
-    NotifyFilters.LastWrite |
-    NotifyFilters.Size |
-    NotifyFilters.Security;
-            this._fileSystemMonitor.BeginInit();
-            this._fileSystemMonitor.EndInit();
+
+            SqlLiteManager.GetInstance().Migrate("database.sqlite");
+            this._fileWatcher = new Timer();
+            this._fileWatcher.Elapsed += _fileWatcher_Elapsed;
+            this._fileWatcher.Interval = 3000;
+            this._fileWatcher.Enabled = true;
         }
 
-        private void _fileSystemMonitor_Renamed(object sender, RenamedEventArgs e)
+        private void _fileWatcher_Elapsed(object sender, ElapsedEventArgs e)
         {
-            ProcessFileChange(e.FullPath);
+            Task.Run(() => ProcessFileChange());
         }
 
         private void LoadSettings()
@@ -66,38 +65,84 @@ namespace DeploymentService
             this._tmpDirectory = ConfigurationManager.AppSettings["tmpDirectory"].ToString();
             this._monitorDirectory = ConfigurationManager.AppSettings["monitorDirectory"].ToString();
             this._extractDirectory = ConfigurationManager.AppSettings["extractDirectory"].ToString();
+            this._projects = Project.LoadProjects(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.xml"));
         }
 
-        private void ProcessFileChange(string filename)
+        private async void ProcessFileChange()
         {
-            _logger.Info("Detected file change. Filename={0}", filename);
-            DateTime lastWriteTime = System.IO.File.GetLastWriteTime(filename);
-
-            if (this._fileProcessedDictionary.Keys.Contains(filename))
+            await Task.Run(() =>
             {
-                _logger.Info("File exists in dictionary. Filename={0},LastWriteTime={1}", filename, lastWriteTime);
-                if (lastWriteTime != this._fileProcessedDictionary[filename])
+                string[] files = Directory.GetFiles(this._monitorDirectory);
+
+                foreach (string file in files)
                 {
-                    _logger.Info("LastWriteTime Differs.Processing package. Old={0},New={1}", this._fileProcessedDictionary[filename], lastWriteTime);
-                    this._fileProcessedDictionary[filename] = lastWriteTime;
-                    Task.Run(() => UnzipPackage(filename));
+                    if (Path.GetExtension(file).ToUpper() != ".ZIP")
+                    {
+                        continue;
+                    }
+
+                    string packageName = Path.GetFileName(file);
+
+                    if (!SqlLiteManager.GetInstance().GetPackageExists(packageName))
+                    {
+                        Task.Run(async () =>
+                        {
+                            _logger.Info("Processsing {0}", packageName);
+                            SqlLiteManager.GetInstance().InsertPackage(packageName);
+                            SqlLiteManager.GetInstance().UpdateStatus(SqlLiteManager.UPGRADE_STATUS_RUNNING, packageName);
+                            await UnzipPackage(file);
+                        }
+                        ).ContinueWith((x) =>
+                        {
+                            if (x.IsFaulted)
+                            {
+                                _logger.Info("Processsing complete with error {0}", packageName);
+                                SqlLiteManager.GetInstance().UpdateStatus(SqlLiteManager.UPGRADE_STATUS_FAILED, packageName);
+                            }
+                            else
+                            {
+                                FinalizeDeployment(packageName);
+                                _logger.Info("Processsing complete {0}", packageName);
+                                SqlLiteManager.GetInstance().UpdateStatus(SqlLiteManager.UPGRADE_STATUS_COMPLETE, packageName);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+        private void FinalizeDeployment(string packageName)
+        {
+            try
+            {
+                string extractDirectory = Path.Combine(this._extractDirectory, Path.GetFileNameWithoutExtension(packageName));
+
+                var s = Path.Combine(extractDirectory, Directory.GetDirectories(extractDirectory).FirstOrDefault());
+                string deploymentInstructions = Directory.GetFiles(Path.Combine(extractDirectory, Directory.GetDirectories(extractDirectory).FirstOrDefault()), "deployment.xml").FirstOrDefault();
+                if (!String.IsNullOrEmpty(deploymentInstructions))
+                {
+                    XDocument xDeploymentInstructions = XDocument.Load(deploymentInstructions);
+                    Guid projectGUID = Guid.Parse(xDeploymentInstructions.Element("deployment").Element("projectGUID").Value);
+                    Project project = this._projects.FirstOrDefault(x => x.Id == projectGUID);
+                    if (project == null)
+                    {
+                        _logger.Error("deployment.xml was found but project guid {0} was not found in the config.xml", projectGUID.ToString());
+                        return;
+                    }
+                    _logger.Info("deployment.xml found. Deploying {0} to {1} for project id={2}", extractDirectory, project.Destination, projectGUID.ToString());
+
+                    DirectoryHelper.DeleteDirectory(project.Destination);
+                    DirectoryHelper.Copy(extractDirectory, project.Destination);
                 }
                 else
                 {
-                    _logger.Info("LastWriteTime is the same.Skipping.");
+                    _logger.Info("deployment.xml not found in extracted folder");
                 }
             }
-            else
+            catch (Exception ex)
             {
-                _logger.Info("File does not exist in dictionary. Processing package");
-                this._fileProcessedDictionary[filename] = lastWriteTime;
-                Task.Run(() => UnzipPackage(filename));
+                _logger.Error("Exception in FinalizeDeployment", ex);
             }
-        }
-
-        private void FileSystemWatcherBuilds_Changed(object sender, System.IO.FileSystemEventArgs e)
-        {
-            ProcessFileChange(e.FullPath);
         }
 
         /// <summary>
@@ -131,9 +176,9 @@ namespace DeploymentService
             }
         }
 
-        private async void UnzipPackage(string filename)
+        private async Task UnzipPackage(string filename)
         {
-            //  CheckLockedFile(filename);
+            CheckLockedFile(filename);
 
             ManifestPackager packager = new ManifestPackager();
             string filenameWithoutExtenstion = Path.GetFileNameWithoutExtension(filename);
@@ -152,10 +197,8 @@ namespace DeploymentService
 
             await packager.ExtractPackage(filename, packageExtractDirectory, packageTmpDirectory);
 
-            if (Directory.Exists(packageTmpDirectory))
-            {
-                Directory.Delete(packageTmpDirectory);
-            }
+            File.Delete(filename);
+
             _logger.Info("Package extraction complete. Filename={0},ExtractDirectory directory={1},tmpDirectory={2}", filename, packageExtractDirectory, packageTmpDirectory);
         }
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Codenesium.PackageManagement.BuildCopyLib
 {
-    public class Project
+    public class CopyProject
     {
         protected static Logger _logger = LogManager.GetCurrentClassLogger();
         public List<CopyTask> CopyTasks { get; set; }
@@ -15,7 +15,7 @@ namespace Codenesium.PackageManagement.BuildCopyLib
 
         public string Name { get; set; }
 
-        public Project()
+        public CopyProject()
         {
         }
     }

@@ -58,6 +58,7 @@ namespace Codenesium.PackageManagement
                         File.Delete(file);
                     }
                 }
+                Directory.Delete(tmpDirectory);
             });
         }
 

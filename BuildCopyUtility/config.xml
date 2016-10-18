@@ -63,6 +63,15 @@
         </destinations>
       </copyTask>
       <copyTask>
+        <name>DeploymentFile</name>
+        <isDirectory>false</isDirectory>
+        <description>Copy deploymentfile to package</description>
+        <source>$(RepositoryRootDirectory)\FoundationWeb\FermataFish\FFWebsite\bin\deployment.xml</source>
+        <destinations>
+          <destination>$(OutputDirectory)\deployment.xml</destination>
+        </destinations>
+      </copyTask>
+      <copyTask>
         <name>Views</name>
         <isDirectory>true</isDirectory>
         <description>Copy views to foundation</description>

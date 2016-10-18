@@ -12,7 +12,7 @@ namespace Codenesium.PackageManagement.BuildCopyLib
     public class ProjectManager
     {
         protected static Logger _logger = LogManager.GetCurrentClassLogger();
-        public List<Project> Projects { get; private set; }
+        public List<CopyProject> Projects { get; private set; }
         public Dictionary<string, string> Globals { get; private set; } = new Dictionary<string, string>();
 
         public async Task ExecuteProject(string name)
@@ -36,55 +36,12 @@ namespace Codenesium.PackageManagement.BuildCopyLib
                 VerifyPaths(copyTask);
             }
 
-            DeleteDirectories(project.DeleteDirectories);
+            DirectoryHelper.DeleteDirectories(project.DeleteDirectories);
 
             foreach (CopyTask copyTask in project.CopyTasks)
             {
                 _logger.Trace("Executing copy task {0}", copyTask.Name);
                 await ExecuteCopyTask(copyTask);
-            }
-        }
-
-        private void DeleteDirectories(List<string> directories)
-        {
-            foreach (string directory in directories)
-            {
-                if (!directory.ToUpper().Contains("TMP") && !directory.ToUpper().Contains("WWWROOT"))
-                {
-                    _logger.Error("Attempted to delete a directory that does not contain tmp ot wwwroot in the filename");
-                    throw new ArgumentException(@"The directories you're deleting must contain tmp or wwwroot in the filename.
-                        This is keep us from potentially wrecking a file system.");
-                }
-                DeleteDirectory(directory);
-            }
-        }
-
-        private void DeleteDirectory(string directory)
-        {
-            if (Directory.Exists(directory))
-            {
-                _logger.Trace("Deleting directory {0}", directory);
-                int attempts = 0;
-                while (attempts < 5)
-                {
-                    if (attempts >= 5)
-                    {
-                        throw new Exception("Exceeded attempt count of 5");
-                    }
-                    if (Directory.Exists(directory))
-                    {
-                        Directory.Delete(directory, true); //this is potentially dangerous.
-                        if (Directory.Exists(directory))
-                        {
-                            System.Threading.Thread.Sleep(200);
-                            attempts++;
-                        }
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
             }
         }
 
@@ -121,7 +78,7 @@ namespace Codenesium.PackageManagement.BuildCopyLib
             }
         }
 
-        private void ReplaceProjectGlobals(Project project)
+        private void ReplaceProjectGlobals(CopyProject project)
         {
             foreach (string key in this.Globals.Keys)
             {
@@ -141,7 +98,7 @@ namespace Codenesium.PackageManagement.BuildCopyLib
             {
                 if (copyTask.IsDirectory)
                 {
-                    taskList.Add(Task.Run(() => { CopyDir.Copy(copyTask.Source, destination); }));
+                    taskList.Add(Task.Run(() => { DirectoryHelper.Copy(copyTask.Source, destination); }));
                 }
                 else
                 {
@@ -188,7 +145,7 @@ namespace Codenesium.PackageManagement.BuildCopyLib
             this.Globals["$(SourceDirectory)"] = sourceDirectory;
 
             this.Projects = (from p in xDoc.Element("projects").Elements("project")
-                             select new Project
+                             select new CopyProject
                              {
                                  Name = p.Element("name").Value,
                                  DeleteDirectories = p.Element("deleteDirectories").Elements("directory").Select(x => x.Value).ToList(),
@@ -203,7 +160,7 @@ namespace Codenesium.PackageManagement.BuildCopyLib
                                                                   select dest.Value).ToList<string>(),
                                                   Source = ct.Element("source").Value
                                               }).ToList<CopyTask>()
-                             }).ToList<Project>();
+                             }).ToList<CopyProject>();
 
             foreach (string key in this.Globals.Keys)
             {

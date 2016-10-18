@@ -8,7 +8,7 @@ using NLog;
 
 namespace Codenesium.PackageManagement.BuildCopyLib
 {
-    public class CopyDir
+    public class DirectoryHelper
     {
         private static Logger _logger = LogManager.GetCurrentClassLogger();
         //ripped from http://stackoverflow.com/questions/58744/best-way-to-copy-the-entire-contents-of-a-directory-in-c-sharp
@@ -96,6 +96,39 @@ namespace Codenesium.PackageManagement.BuildCopyLib
             {
                 throw;
             }
+        }
+
+        public static void DeleteDirectories(List<string> directories)
+        {
+            foreach (string directory in directories)
+            {
+                if (!directory.ToUpper().Contains("TMP") && !directory.ToUpper().Contains("WWWROOT"))
+                {
+                    throw new ArgumentException(@"The directories you're deleting must contain tmp or wwwroot in the filename.
+                        This is keep us from potentially wrecking a file system.");
+                }
+                DeleteDirectory(directory);
+            }
+        }
+
+        // http://stackoverflow.com/questions/329355/cannot-delete-directory-with-directory-deletepath-true
+        public static void DeleteDirectory(string directory)
+        {
+            string[] files = Directory.GetFiles(directory);
+            string[] dirs = Directory.GetDirectories(directory);
+
+            foreach (string file in files)
+            {
+                File.SetAttributes(file, FileAttributes.Normal);
+                File.Delete(file);
+            }
+
+            foreach (string dir in dirs)
+            {
+                DeleteDirectory(dir);
+            }
+
+            Directory.Delete(directory, false);
         }
     }
 }

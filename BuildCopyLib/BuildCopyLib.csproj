@@ -49,9 +49,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CopyDir.cs" />
+    <Compile Include="DirectoryHelper.cs" />
     <Compile Include="CopyTask.cs" />
-    <Compile Include="Project.cs" />
+    <Compile Include="CopyProject.cs" />
     <Compile Include="ProjectManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
