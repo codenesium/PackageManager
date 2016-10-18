@@ -128,7 +128,23 @@ namespace Codenesium.PackageManagement.BuildCopyLib
                 DeleteDirectory(dir);
             }
 
-            Directory.Delete(directory, false);
+            int attempts = 0;
+            while (attempts < 5)
+            {
+                try
+                {
+                    Directory.Delete(directory, false);
+                }
+                catch (Exception)
+                {
+                    System.Threading.Thread.Sleep(200);
+                    if (attempts >= 5)
+                    {
+                        throw new Exception("Exceeded attempt count of 5 trying to delete direcotry " + directory);
+                    }
+                    attempts++;
+                }
+            }
         }
     }
 }

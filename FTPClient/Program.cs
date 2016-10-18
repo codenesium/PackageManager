@@ -45,7 +45,8 @@ HelpText = "The name the file will be renamed to when the upload is complete")]
             {
                 var result = Parser.Default.ParseArguments<Options>(args)
                 .WithParsed(options =>
-                { // options is an instance of Options type
+                {
+                    Console.WriteLine("FTP upload starting");
                     foreach (string arg in args)
                     {
                         Console.WriteLine(arg);
@@ -58,7 +59,7 @@ HelpText = "The name the file will be renamed to when the upload is complete")]
                         RenameFileName(options.Username, options.Password, remoteTempFilename, options.RemoteFinalFilename);
                     }
 
-                    Console.WriteLine("FTP complete");
+                    Console.WriteLine("FTP upload complete");
                 })
                 .WithNotParsed(errors => { });
             }
