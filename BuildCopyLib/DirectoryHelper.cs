@@ -46,11 +46,11 @@ namespace Codenesium.PackageManagement.BuildCopyLib
                         Directory.CreateDirectory(target.FullName);
                         if (Directory.Exists(target.FullName))
                         {
-                            directoryCreationAttempts = 5;
+                            break;
                         }
                         else
                         {
-                            System.Threading.Thread.Sleep(1000);
+                            System.Threading.Thread.Sleep(200);
                             if (directoryCreationAttempts >= 5)
                             {
                                 throw new Exception("Exceeded attempt count of 5");
@@ -72,12 +72,13 @@ namespace Codenesium.PackageManagement.BuildCopyLib
                             fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
                             attempts = 5;
                         }
-                        catch (Exception)
+                        catch (Exception ex)
                         {
-                            System.Threading.Thread.Sleep(1000);
+                            _logger.Trace("Exception copying. Will retry. directory={0},message={1}", fi.FullName, ex.Message);
+                            System.Threading.Thread.Sleep(200);
                             if (attempts >= 5)
                             {
-                                throw new Exception("Exceeded attempt count of 5");
+                                throw new Exception("Exceeded attempt count of 5. File =" + fi.FullName);
                             }
                             attempts++;
                         }
@@ -120,7 +121,25 @@ namespace Codenesium.PackageManagement.BuildCopyLib
             foreach (string file in files)
             {
                 File.SetAttributes(file, FileAttributes.Normal);
-                File.Delete(file);
+                _logger.Trace("Deleting file={0}", file);
+                int fileAttempts = 0;
+                while (fileAttempts < 5)
+                {
+                    try
+                    {
+                        File.Delete(file);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Trace("Exception deleting file. Will retry. directory={0,message={1}", directory, ex.Message);
+                        System.Threading.Thread.Sleep(200);
+                        if (fileAttempts >= 5)
+                        {
+                            throw new Exception("Exceeded attempt count of 5 trying to delete file " + file);
+                        }
+                        fileAttempts++;
+                    }
+                }
             }
 
             foreach (string dir in dirs)
@@ -133,14 +152,16 @@ namespace Codenesium.PackageManagement.BuildCopyLib
             {
                 try
                 {
+                    _logger.Trace("Deleting directory={0}", directory);
                     Directory.Delete(directory, false);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    _logger.Trace("Exception deleting. Will retry. directory={0},message={1}", directory, ex.Message);
                     System.Threading.Thread.Sleep(200);
                     if (attempts >= 5)
                     {
-                        throw new Exception("Exceeded attempt count of 5 trying to delete direcotry " + directory);
+                        throw new Exception("Exceeded attempt count of 5 trying to delete directory " + directory);
                     }
                     attempts++;
                 }
