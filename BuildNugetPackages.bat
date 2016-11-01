@@ -4,3 +4,4 @@ nuget pack ConnectionStringUtility/ConnectionStringUtility.csproj  -IncludeRefer
 nuget pack ConsolePackager/ConsolePackager.csproj  -IncludeReferencedProjects  -o  ../NugetPackages
 nuget pack FTPClient/FTPClient.csproj -o  ../NugetPackages
 nuget pack PackageManagementLib/PackageManagementLib.csproj  -IncludeReferencedProjects  -o ../NugetPackages
+nuget pack NotificationUtility/NotificationUtility.csproj  -IncludeReferencedProjects  -o ../NugetPackages

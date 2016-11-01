@@ -140,7 +140,6 @@ namespace DeploymentService
 
                     try
                     {
-                        Notify(String.Format("Starting deployment on {0} for project {1}. Package {2}", Environment.MachineName, project.Name, Path.GetFileName(packageName)), project.Notifications);
                         DirectoryHelper.DeleteDirectory(project.Destination);
                         DirectoryHelper.Copy(extractDirectory, project.Destination);
                         Notify(String.Format("Deployment complete on {0} for project {1}. Package {2}", Environment.MachineName, project.Name, Path.GetFileName(packageName)), project.Notifications);
