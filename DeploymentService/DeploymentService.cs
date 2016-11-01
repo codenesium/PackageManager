@@ -16,6 +16,7 @@ using Codenesium.PackageManagement.DeploymentService;
 using System.Reflection;
 using System.Xml.Linq;
 using Codenesium.PackageManagement.BuildCopyLib;
+using Twilio;
 
 namespace DeploymentService
 {
@@ -24,6 +25,9 @@ namespace DeploymentService
         private string _tmpDirectory;//files being extracted go here
         private string _monitorDirectory;//we monitor this directory for zip files
         private string _extractDirectory;//where the rebuilt packages will go
+        private string _twilioSID; //used for notifications
+        private string _twilioAuthToken;//used for notifications
+        private string _twilioNumber;//used for notifications
         private Timer _fileWatcher;
         protected static Logger _logger = LogManager.GetCurrentClassLogger();
         private List<Project> _projects;
@@ -65,6 +69,9 @@ namespace DeploymentService
             this._tmpDirectory = ConfigurationManager.AppSettings["tmpDirectory"].ToString();
             this._monitorDirectory = ConfigurationManager.AppSettings["monitorDirectory"].ToString();
             this._extractDirectory = ConfigurationManager.AppSettings["extractDirectory"].ToString();
+            this._twilioAuthToken = ConfigurationManager.AppSettings["twilioAuthToken"].ToString();
+            this._twilioSID = ConfigurationManager.AppSettings["twilioSID"].ToString();
+            this._twilioNumber = ConfigurationManager.AppSettings["twilioNumber"].ToString();
             this._projects = Project.LoadProjects(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.xml"));
         }
 
@@ -131,8 +138,17 @@ namespace DeploymentService
                     }
                     _logger.Info("deployment.xml found. Deploying {0} to {1} for project id={2}", extractDirectory, project.Destination, projectGUID.ToString());
 
-                    DirectoryHelper.DeleteDirectory(project.Destination);
-                    DirectoryHelper.Copy(extractDirectory, project.Destination);
+                    try
+                    {
+                        Notify(String.Format("Starting deployment on {0} for project {1}. Package {2}", Environment.MachineName, project.Name, Path.GetFileName(packageName)), project.Notifications);
+                        DirectoryHelper.DeleteDirectory(project.Destination);
+                        DirectoryHelper.Copy(extractDirectory, project.Destination);
+                        Notify(String.Format("Deployment complete on {0} for project {1}. Package {2}", Environment.MachineName, project.Name, Path.GetFileName(packageName)), project.Notifications);
+                    }
+                    catch (Exception ex)
+                    {
+                        Notify(String.Format("Deployment failed on {0} for project {1}. Package {2}. Error {3}.", Environment.MachineName, project.Name, Path.GetFileName(packageName), project.Notifications, ex.Message), project.Notifications);
+                    }
                 }
                 else
                 {
@@ -141,7 +157,28 @@ namespace DeploymentService
             }
             catch (Exception ex)
             {
-                _logger.Error("Exception in FinalizeDeployment", ex);
+                _logger.Error(ex);
+            }
+        }
+
+        private void Notify(string message, List<String> phoneNumbers)
+        {
+            try
+            {
+                var twilio = new TwilioRestClient(this._twilioSID, this._twilioAuthToken);
+
+                foreach (var number in phoneNumbers)
+                {
+                    var twilioMessage = twilio.SendMessage(
+                        this._twilioNumber, number,
+                        message);
+
+                    _logger.Info("Twilio result status={0},ErrorMessage={0}", twilioMessage.Status, twilioMessage.ErrorMessage);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
             }
         }
 

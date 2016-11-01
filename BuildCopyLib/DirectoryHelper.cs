@@ -128,6 +128,7 @@ namespace Codenesium.PackageManagement.BuildCopyLib
                     try
                     {
                         File.Delete(file);
+                        break;
                     }
                     catch (Exception ex)
                     {
@@ -153,7 +154,11 @@ namespace Codenesium.PackageManagement.BuildCopyLib
                 try
                 {
                     _logger.Trace("Deleting directory={0}", directory);
-                    Directory.Delete(directory, false);
+                    if (Directory.Exists(directory))
+                    {
+                        Directory.Delete(directory, false);
+                    }
+                    break;
                 }
                 catch (Exception ex)
                 {

@@ -4,5 +4,8 @@
     <name>FermataFish</name>
     <id>7e97a2e1-8199-470a-97f8-61c12c2d35df</id>
     <destination>c:\inetpub\wwwroot\FermataFish</destination>
+    <notifications>
+      <notification tyle="sms">xxxxxxxxxx</notification>
+    </notifications>
   </project>
 </projects>
