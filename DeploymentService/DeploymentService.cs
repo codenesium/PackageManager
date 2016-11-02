@@ -141,7 +141,7 @@ namespace DeploymentService
                     try
                     {
                         DirectoryHelper.DeleteDirectory(project.Destination);
-                        DirectoryHelper.Copy(extractDirectory, project.Destination);
+                        DirectoryHelper.Copy(Path.Combine(extractDirectory, Directory.GetDirectories(extractDirectory).FirstOrDefault()), project.Destination); //copy the contents of the first directory found in the package
                         Notify(String.Format("Deployment complete on {0} for project {1}. Package {2}", Environment.MachineName, project.Name, Path.GetFileName(packageName)), project.Notifications);
                     }
                     catch (Exception ex)

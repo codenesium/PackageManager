@@ -115,6 +115,10 @@ namespace Codenesium.PackageManagement.BuildCopyLib
         // http://stackoverflow.com/questions/329355/cannot-delete-directory-with-directory-deletepath-true
         public static void DeleteDirectory(string directory)
         {
+            if (!Directory.Exists(directory))
+            {
+                return;
+            }
             string[] files = Directory.GetFiles(directory);
             string[] dirs = Directory.GetDirectories(directory);
 

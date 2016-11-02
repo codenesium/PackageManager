@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Threading;
+using Codenesium.PackageManagement.BuildCopyLib;
 
 namespace Packagemanager.Tests
 {
@@ -31,19 +32,19 @@ namespace Packagemanager.Tests
 
             if (Directory.Exists(inputDirectory))
             {
-                DeleteFolder(inputDirectory);
+                DirectoryHelper.DeleteDirectory(inputDirectory);
             }
             if (Directory.Exists(createPackageOutput))
             {
-                DeleteFolder(createPackageOutput);
+                DirectoryHelper.DeleteDirectory(createPackageOutput);
             }
             if (Directory.Exists(extractPackageOutput))
             {
-                DeleteFolder(extractPackageOutput);
+                DirectoryHelper.DeleteDirectory(extractPackageOutput);
             }
             if (Directory.Exists(tmpDirectory))
             {
-                DeleteFolder(tmpDirectory);
+                DirectoryHelper.DeleteDirectory(tmpDirectory);
             }
             Directory.CreateDirectory(inputDirectory);
             Directory.CreateDirectory(createPackageOutput);
@@ -86,23 +87,6 @@ namespace Packagemanager.Tests
 
             File.WriteAllText(Path.Combine(sub1, "1.txt"), "test");
             File.WriteAllText(Path.Combine(sub1A, "2.txt"), "test");
-        }
-
-        private void DeleteFolder(string FolderName)
-        {
-            //http://stackoverflow.com/questions/1288718/how-to-delete-all-files-and-folders-in-a-directory
-            DirectoryInfo dir = new DirectoryInfo(FolderName);
-
-            foreach (FileInfo fi in dir.GetFiles())
-            {
-                fi.Delete();
-            }
-
-            foreach (DirectoryInfo di in dir.GetDirectories())
-            {
-                DeleteFolder(di.FullName);
-                di.Delete();
-            }
         }
 
         private void VerifyTestFiles(string rootDirectory)
