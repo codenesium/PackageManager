@@ -17,12 +17,14 @@ using System.Reflection;
 using System.Xml.Linq;
 using Codenesium.PackageManagement.BuildCopyLib;
 using Twilio;
+using Codenesium.IISIntegration;
 
 namespace DeploymentService
 {
     public partial class DeploymentService : ServiceBase
     {
         private string _tmpDirectory;//files being extracted go here
+        private string _iisRootDirectory;//where we will copy the extracted applications
         private string _monitorDirectory;//we monitor this directory for zip files
         private string _extractDirectory;//where the rebuilt packages will go
         private string _twilioSID; //used for notifications
@@ -30,7 +32,6 @@ namespace DeploymentService
         private string _twilioNumber;//used for notifications
         private Timer _fileWatcher;
         protected static Logger _logger = LogManager.GetCurrentClassLogger();
-        private List<Project> _projects;
         private Dictionary<string, DateTime> _fileProcessedDictionary = new Dictionary<string, DateTime>();
 
         public DeploymentService()
@@ -72,7 +73,7 @@ namespace DeploymentService
             this._twilioAuthToken = ConfigurationManager.AppSettings["twilioAuthToken"].ToString();
             this._twilioSID = ConfigurationManager.AppSettings["twilioSID"].ToString();
             this._twilioNumber = ConfigurationManager.AppSettings["twilioNumber"].ToString();
-            this._projects = Project.LoadProjects(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.xml"));
+            this._iisRootDirectory = ConfigurationManager.AppSettings["iisRootDirectory"].ToString();
         }
 
         private async void ProcessFileChange()
@@ -118,6 +119,35 @@ namespace DeploymentService
             });
         }
 
+        private void SetupIIS(Project project)
+        {
+            IISIntegration iisManager = new IISIntegration();
+            var siteList = iisManager.GetSiteList();
+            var applicationList = iisManager.GetApplicationListForSite(project.Site);
+            var appPoolList = iisManager.GetApplicationPoolList();
+            if (applicationList.Any(x => x == project.Name))
+            {
+                iisManager.DeleteApplication(project.Site, project.Name);
+            }
+
+            if (appPoolList.Any(x => x == project.Name))
+            {
+                iisManager.DeleteAppPool(project.Name);
+            }
+            if (!Directory.Exists(this._iisRootDirectory))
+            {
+                Directory.CreateDirectory(this._iisRootDirectory);
+            }
+            iisManager.CreateAppPool(project.Name, "v4.0", false);
+
+            if (!siteList.Any(x => x == project.Site))
+            {
+                iisManager.CreateWebSite(project.Site, this._iisRootDirectory, 80);
+            }
+
+            iisManager.CreateApplication(project.Site, Path.Combine(this._iisRootDirectory, project.Destination), "/" + project.Name, project.Name);
+        }
+
         private void FinalizeDeployment(string packageName)
         {
             try
@@ -128,20 +158,16 @@ namespace DeploymentService
                 string deploymentInstructions = Directory.GetFiles(Path.Combine(extractDirectory, Directory.GetDirectories(extractDirectory).FirstOrDefault()), "deployment.xml").FirstOrDefault();
                 if (!String.IsNullOrEmpty(deploymentInstructions))
                 {
-                    XDocument xDeploymentInstructions = XDocument.Load(deploymentInstructions);
-                    Guid projectGUID = Guid.Parse(xDeploymentInstructions.Element("deployment").Element("projectGUID").Value);
-                    Project project = this._projects.FirstOrDefault(x => x.Id == projectGUID);
-                    if (project == null)
-                    {
-                        _logger.Error("deployment.xml was found but project guid {0} was not found in the config.xml", projectGUID.ToString());
-                        return;
-                    }
-                    _logger.Info("deployment.xml found. Deploying {0} to {1} for project id={2}", extractDirectory, project.Destination, projectGUID.ToString());
+                    Project project = Project.LoadProjects(deploymentInstructions).FirstOrDefault();
+
+                    _logger.Info("deployment.xml found. Deploying {0} to {1} for project id={2}", extractDirectory, project.Destination, project.Id);
 
                     try
                     {
-                        DirectoryHelper.DeleteDirectory(project.Destination);
-                        DirectoryHelper.Copy(Path.Combine(extractDirectory, Directory.GetDirectories(extractDirectory).FirstOrDefault()), project.Destination); //copy the contents of the first directory found in the package
+                        string destination = Path.Combine(this._iisRootDirectory, project.Destination);
+                        DirectoryHelper.DeleteDirectory(destination);
+                        DirectoryHelper.Copy(Path.Combine(extractDirectory, Directory.GetDirectories(extractDirectory).FirstOrDefault()), destination); //copy the contents of the first directory found in the package
+                        SetupIIS(project);
                         Notify(String.Format("Deployment complete on {0} for project {1}. Package {2}", Environment.MachineName, project.Name, Path.GetFileName(packageName)), project.Notifications);
                     }
                     catch (Exception ex)

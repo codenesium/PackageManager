@@ -12,6 +12,8 @@ namespace Codenesium.PackageManagement.DeploymentService
         public string Name { get; set; }
         public Guid Id { get; set; }
         public string Destination { get; set; }
+
+        public string Site { get; set; }
         public List<string> Notifications = new List<string>();
 
         public static List<Project> LoadProjects(string filename)
@@ -25,6 +27,7 @@ namespace Codenesium.PackageManagement.DeploymentService
                            Destination = p.Element("destination").Value,
                            Id = Guid.Parse(p.Element("id").Value),
                            Name = p.Element("name").Value,
+                           Site = p.Element("site").Value,
                            Notifications = (from not in p.Element("notifications").Elements("notification")
                                             select not.Value).ToList()
                        }).ToList();
