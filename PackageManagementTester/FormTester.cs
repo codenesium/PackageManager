@@ -61,5 +61,19 @@ namespace Codenesium.PackageManagementTester
             await packager.CreatePackage(textBoxInputDirectory.Text, textBoxOutputDirectory.Text, textBoxtTempDirectory.Text, Package.PackageFilenameWithExtension(textBoxPrefix.Text, textBoxMajorVersion.Text, textBoxMinorVersion.Text))
                    .ContinueWith(x => MessageBox.Show("Complete!"));
         }
+
+        private async void buttonExtractLegacyEncryptedPackage_Click(object sender, EventArgs e)
+        {
+            Package packageManager = new Package();
+            await packageManager.UnZipDirectoryLegacyEncrypted(textBoxPackageFile.Text, textBoxExtractOutputDirectory.Text, textBoxExtractPassword.Text)
+                .ContinueWith(x => MessageBox.Show("Complete!"));
+        }
+
+        private async void buttonCreateLegacyPasswordWithPassword_Click(object sender, EventArgs e)
+        {
+            Package packageManager = new Package();
+            await packageManager.ZipDirectoryLegacyEncryptedPackage(textBoxInputDirectory.Text, textBoxOutputDirectory.Text, Package.PackageFilenameWithExtension(textBoxPrefix.Text, textBoxMajorVersion.Text, textBoxMinorVersion.Text), textBoxCreatePackagePassword.Text)
+                .ContinueWith(x => MessageBox.Show("Complete!"));
+        }
     }
 }

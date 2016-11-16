@@ -31,6 +31,29 @@ namespace Codenesium.PackageManagement
             });
         }
 
+        public async Task UnZipDirectoryLegacyEncrypted(string inputFilename, string outputDirectory,string password)
+        {
+            if (!Directory.Exists(outputDirectory))
+            {
+                Directory.CreateDirectory(outputDirectory);
+            }
+
+            if (!File.Exists(inputFilename))
+            {
+                throw new FileNotFoundException("Input filename was not found " + inputFilename);
+            }
+
+            await Task.Run(() =>
+            {
+                using (ZipFile zip = ZipFile.Read(inputFilename))
+                {
+                    zip.Encryption = EncryptionAlgorithm.PkzipWeak;
+                    zip.Password = password;
+                    zip.ExtractAll(outputDirectory, ExtractExistingFileAction.OverwriteSilently);
+                }
+            });
+        }
+
         public async Task ZipDirectory(string inputDirectory, string outputDirectory, string filename)
         {
             if (!Directory.Exists(inputDirectory))
@@ -55,6 +78,34 @@ namespace Codenesium.PackageManagement
                 }
             });
         }
+
+        public async Task ZipDirectoryLegacyEncryptedPackage(string inputDirectory, string outputDirectory, string filename,string password)
+        {
+            if (!Directory.Exists(inputDirectory))
+            {
+                throw new DirectoryNotFoundException(String.Format("Input directory was not found {0}", inputDirectory));
+            }
+
+            if (!Directory.Exists(outputDirectory))
+            {
+                Directory.CreateDirectory(outputDirectory);
+            }
+
+            string outputFilename = Path.Combine(outputDirectory, filename);
+
+            await Task.Factory.StartNew(() =>
+            {
+                using (ZipFile zip = new ZipFile())
+                {
+                    zip.Encryption = EncryptionAlgorithm.PkzipWeak;
+                    zip.Password = password;
+                    zip.AddDirectory(inputDirectory);
+                    zip.CompressionLevel = Ionic.Zlib.CompressionLevel.BestCompression;
+                    zip.Save(outputFilename);
+                }
+            });
+        }
+
 
         public static string PackageFilename(string prefix, string majorVersion, string minorVersion)
         {

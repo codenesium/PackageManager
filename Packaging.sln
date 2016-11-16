@@ -1,15 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageManagementLib", "PackageManagementLib\PackageManagementLib.csproj", "{849C6645-0C2F-4372-954D-B98F020901AA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageManagementTester", "PackageManagementTester\PackageManagementTester.csproj", "{247A92A0-AAA9-48F1-A276-94504161AD5B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Packagemanager.Tests", "Packagemanager.Tests\Packagemanager.Tests.csproj", "{EEF52C56-ECD5-419D-9EF5-7F4D43F83A95}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeploymentService", "DeploymentService\DeploymentService.csproj", "{F1AC7918-F3E5-4A91-94A9-E3A4616566B2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FTPClient", "FTPClient\FTPClient.csproj", "{30054E74-D042-458E-B852-7F05ECAC9E97}"
 EndProject
@@ -47,10 +45,6 @@ Global
 		{EEF52C56-ECD5-419D-9EF5-7F4D43F83A95}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EEF52C56-ECD5-419D-9EF5-7F4D43F83A95}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEF52C56-ECD5-419D-9EF5-7F4D43F83A95}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F1AC7918-F3E5-4A91-94A9-E3A4616566B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F1AC7918-F3E5-4A91-94A9-E3A4616566B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F1AC7918-F3E5-4A91-94A9-E3A4616566B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F1AC7918-F3E5-4A91-94A9-E3A4616566B2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{30054E74-D042-458E-B852-7F05ECAC9E97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{30054E74-D042-458E-B852-7F05ECAC9E97}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30054E74-D042-458E-B852-7F05ECAC9E97}.Release|Any CPU.ActiveCfg = Release|Any CPU

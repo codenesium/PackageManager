@@ -30,6 +30,9 @@
         {
             this.folderBrowserDialogSelect = new System.Windows.Forms.FolderBrowserDialog();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label10 = new System.Windows.Forms.Label();
+            this.textBoxExtractPassword = new System.Windows.Forms.TextBox();
+            this.buttonExtractLegacyEncryptedPackage = new System.Windows.Forms.Button();
             this.textBoxExtractTempDirectory = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.buttonExtractPackageWithManifest = new System.Windows.Forms.Button();
@@ -39,6 +42,9 @@
             this.textBoxPackageFile = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.buttonCreateLegacyPasswordWithPassword = new System.Windows.Forms.Button();
+            this.label11 = new System.Windows.Forms.Label();
+            this.textBoxCreatePackagePassword = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.textBoxPrefix = new System.Windows.Forms.TextBox();
             this.textBoxtTempDirectory = new System.Windows.Forms.TextBox();
@@ -61,6 +67,9 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.label10);
+            this.tabPage2.Controls.Add(this.textBoxExtractPassword);
+            this.tabPage2.Controls.Add(this.buttonExtractLegacyEncryptedPackage);
             this.tabPage2.Controls.Add(this.textBoxExtractTempDirectory);
             this.tabPage2.Controls.Add(this.label8);
             this.tabPage2.Controls.Add(this.buttonExtractPackageWithManifest);
@@ -76,6 +85,32 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Extract Package";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(21, 172);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(53, 13);
+            this.label10.TabIndex = 18;
+            this.label10.Text = "Password";
+            // 
+            // textBoxExtractPassword
+            // 
+            this.textBoxExtractPassword.Location = new System.Drawing.Point(21, 188);
+            this.textBoxExtractPassword.Name = "textBoxExtractPassword";
+            this.textBoxExtractPassword.Size = new System.Drawing.Size(445, 20);
+            this.textBoxExtractPassword.TabIndex = 17;
+            // 
+            // buttonExtractLegacyEncryptedPackage
+            // 
+            this.buttonExtractLegacyEncryptedPackage.Location = new System.Drawing.Point(311, 243);
+            this.buttonExtractLegacyEncryptedPackage.Name = "buttonExtractLegacyEncryptedPackage";
+            this.buttonExtractLegacyEncryptedPackage.Size = new System.Drawing.Size(108, 51);
+            this.buttonExtractLegacyEncryptedPackage.TabIndex = 16;
+            this.buttonExtractLegacyEncryptedPackage.Text = "Extract Legacy Encrypted Package";
+            this.buttonExtractLegacyEncryptedPackage.UseVisualStyleBackColor = true;
+            this.buttonExtractLegacyEncryptedPackage.Click += new System.EventHandler(this.buttonExtractLegacyEncryptedPackage_Click);
             // 
             // textBoxExtractTempDirectory
             // 
@@ -137,7 +172,7 @@
             this.textBoxPackageFile.Name = "textBoxPackageFile";
             this.textBoxPackageFile.Size = new System.Drawing.Size(445, 20);
             this.textBoxPackageFile.TabIndex = 3;
-            this.textBoxPackageFile.Text = "C:\\tmp\\PackageOutput\\Package_2016.3.6.929.1515.zip";
+            this.textBoxPackageFile.Text = "C:\\tmp\\Package_2016.4.5.920.1315.zip";
             // 
             // label5
             // 
@@ -150,6 +185,9 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.buttonCreateLegacyPasswordWithPassword);
+            this.tabPage1.Controls.Add(this.label11);
+            this.tabPage1.Controls.Add(this.textBoxCreatePackagePassword);
             this.tabPage1.Controls.Add(this.label9);
             this.tabPage1.Controls.Add(this.textBoxPrefix);
             this.tabPage1.Controls.Add(this.textBoxtTempDirectory);
@@ -171,6 +209,32 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Create Package";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // buttonCreateLegacyPasswordWithPassword
+            // 
+            this.buttonCreateLegacyPasswordWithPassword.Location = new System.Drawing.Point(306, 265);
+            this.buttonCreateLegacyPasswordWithPassword.Name = "buttonCreateLegacyPasswordWithPassword";
+            this.buttonCreateLegacyPasswordWithPassword.Size = new System.Drawing.Size(108, 51);
+            this.buttonCreateLegacyPasswordWithPassword.TabIndex = 21;
+            this.buttonCreateLegacyPasswordWithPassword.Text = "Create Legacy Encrypted Package";
+            this.buttonCreateLegacyPasswordWithPassword.UseVisualStyleBackColor = true;
+            this.buttonCreateLegacyPasswordWithPassword.Click += new System.EventHandler(this.buttonCreateLegacyPasswordWithPassword_Click);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(18, 207);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(53, 13);
+            this.label11.TabIndex = 20;
+            this.label11.Text = "Password";
+            // 
+            // textBoxCreatePackagePassword
+            // 
+            this.textBoxCreatePackagePassword.Location = new System.Drawing.Point(18, 223);
+            this.textBoxCreatePackagePassword.Name = "textBoxCreatePackagePassword";
+            this.textBoxCreatePackagePassword.Size = new System.Drawing.Size(445, 20);
+            this.textBoxCreatePackagePassword.TabIndex = 19;
             // 
             // label9
             // 
@@ -349,6 +413,12 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TextBox textBoxPrefix;
+        private System.Windows.Forms.Button buttonExtractLegacyEncryptedPackage;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.TextBox textBoxExtractPassword;
+        private System.Windows.Forms.Button buttonCreateLegacyPasswordWithPassword;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TextBox textBoxCreatePackagePassword;
     }
 }
 
