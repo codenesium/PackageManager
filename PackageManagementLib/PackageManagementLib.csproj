@@ -51,7 +51,7 @@
   <ItemGroup>
     <Compile Include="Manifest.cs" />
     <Compile Include="ManifestFile.cs" />
-    <Compile Include="Package.cs" />
+    <Compile Include="Packager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ManifestPackager.cs" />
   </ItemGroup>

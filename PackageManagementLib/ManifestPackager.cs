@@ -28,7 +28,7 @@ namespace Codenesium.PackageManagement
             this._destinationDirectory = destinationDirectory;
             this._fileList.Clear();
 
-            Package packager = new Package();
+            Packager packager = new Packager();
             await packager.UnZipDirectory(inputFilename, this._tmpDirectory);
 
             string manifestFilename = Path.Combine(this._tmpDirectory, "manifest.xml");
@@ -132,7 +132,7 @@ namespace Codenesium.PackageManagement
             XElement manifest = builder.BuildManifest(inputDirectory);
             File.WriteAllText(Path.Combine(tmpDirectory, "manifest.xml"), manifest.ToString());
 
-            Package packager = new Package();
+            Packager packager = new Packager();
             await packager.ZipDirectory(tmpDirectory, destinationDirectory, packageNameWithExtension);
             await Task.Run(() =>
             {

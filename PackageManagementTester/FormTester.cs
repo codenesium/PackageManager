@@ -28,8 +28,8 @@ namespace Codenesium.PackageManagementTester
 
         private async void buttonCreatePackage_Click(object sender, EventArgs e)
         {
-            Package packageManager = new Package();
-            await packageManager.ZipDirectory(textBoxInputDirectory.Text, textBoxOutputDirectory.Text, Package.PackageFilenameWithExtension(textBoxPrefix.Text, textBoxMajorVersion.Text, textBoxMinorVersion.Text))
+            Packager packageManager = new Packager();
+            await packageManager.ZipDirectory(textBoxInputDirectory.Text, textBoxOutputDirectory.Text, Packager.PackageFilenameWithExtension(textBoxPrefix.Text, textBoxMajorVersion.Text, textBoxMinorVersion.Text))
                 .ContinueWith(x => MessageBox.Show("Complete!"));
         }
 
@@ -43,7 +43,7 @@ namespace Codenesium.PackageManagementTester
 
         private async void buttonExtractPackage_Click(object sender, EventArgs e)
         {
-            Package packageManager = new Package();
+            Packager packageManager = new Packager();
             await packageManager.UnZipDirectory(textBoxPackageFile.Text, textBoxExtractOutputDirectory.Text)
                 .ContinueWith(x => MessageBox.Show("Complete!"));
         }
@@ -58,22 +58,22 @@ namespace Codenesium.PackageManagementTester
         private async void buttonCreatePackageWithManifest_Click(object sender, EventArgs e)
         {
             ManifestPackager packager = new ManifestPackager();
-            await packager.CreatePackage(textBoxInputDirectory.Text, textBoxOutputDirectory.Text, textBoxtTempDirectory.Text, Package.PackageFilenameWithExtension(textBoxPrefix.Text, textBoxMajorVersion.Text, textBoxMinorVersion.Text))
+            await packager.CreatePackage(textBoxInputDirectory.Text, textBoxOutputDirectory.Text, textBoxtTempDirectory.Text, Packager.PackageFilenameWithExtension(textBoxPrefix.Text, textBoxMajorVersion.Text, textBoxMinorVersion.Text))
                    .ContinueWith(x => MessageBox.Show("Complete!"));
         }
 
         private async void buttonExtractLegacyEncryptedPackage_Click(object sender, EventArgs e)
         {
-            Package packageManager = new Package();
-            await packageManager.UnZipDirectoryLegacyEncrypted(textBoxPackageFile.Text, textBoxExtractOutputDirectory.Text, textBoxExtractPassword.Text)
-                .ContinueWith(x => MessageBox.Show("Complete!"));
+            //Packager packageManager = new Packager();
+            //await packageManager.UnZipDirectoryLegacyEncrypted(textBoxPackageFile.Text, textBoxExtractOutputDirectory.Text, textBoxExtractPassword.Text)
+            //    .ContinueWith(x => MessageBox.Show("Complete!"));
         }
 
         private async void buttonCreateLegacyPasswordWithPassword_Click(object sender, EventArgs e)
         {
-            Package packageManager = new Package();
-            await packageManager.ZipDirectoryLegacyEncryptedPackage(textBoxInputDirectory.Text, textBoxOutputDirectory.Text, Package.PackageFilenameWithExtension(textBoxPrefix.Text, textBoxMajorVersion.Text, textBoxMinorVersion.Text), textBoxCreatePackagePassword.Text)
-                .ContinueWith(x => MessageBox.Show("Complete!"));
+            //Packager packageManager = new Packager();
+            //await packageManager.ZipDirectoryLegacyEncryptedPackage(textBoxInputDirectory.Text, textBoxOutputDirectory.Text, Packager.PackageFilenameWithExtension(textBoxPrefix.Text, textBoxMajorVersion.Text, textBoxMinorVersion.Text), textBoxCreatePackagePassword.Text)
+            //    .ContinueWith(x => MessageBox.Show("Complete!"));
         }
     }
 }

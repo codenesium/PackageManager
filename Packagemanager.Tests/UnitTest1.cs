@@ -15,8 +15,8 @@ namespace Packagemanager.Tests
         [TestMethod]
         public void PackageFilename()
         {
-            string name = Package.PackageFilenameWithExtension("Package", "2016", "3");
-            string testName = "Package.2016.3." + DateTime.Now.ToString("Mdd") + "." + DateTime.Now.ToString("Hmm") + ".zip";
+            string name = Packager.PackageFilenameWithExtension("Package", "2016", "3");
+            string testName = "Package.2016.3." + DateTime.Now.ToString("Mdd") + "." + DateTime.Now.ToString("Hmmfff") + ".zip";
 
             Assert.AreEqual(name, testName);
         }
@@ -53,7 +53,7 @@ namespace Packagemanager.Tests
 
             CreateTestFiles(inputDirectory);
 
-            string packageName = Package.PackageFilenameWithExtension("Package_", "2016", "3");
+            string packageName = Packager.PackageFilenameWithExtension("Package_", "2016", "3");
             ManifestPackager packager = new ManifestPackager();
 
             ManualResetEvent waiter = new ManualResetEvent(false);//this is needed to stop thread abort exceptions see http://www.dankemper.net/t3/index.php/tutorials-menu-top/unit-testing-async-menu-item

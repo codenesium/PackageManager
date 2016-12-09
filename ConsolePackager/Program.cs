@@ -49,7 +49,7 @@ namespace Codenesium.PackageManagement.ConsolePackager
                 {
                     if (!String.IsNullOrEmpty(options.PackagePrefix))
                     {
-                        Console.WriteLine(Package.PackageFilenameWithExtension(
+                        Console.WriteLine(Packager.PackageFilenameWithExtension(
                                         options.PackagePrefix,
                                         options.MajorVersion,
                                         options.MinorVersion));
@@ -62,13 +62,12 @@ namespace Codenesium.PackageManagement.ConsolePackager
                         }
                         try
                         {
-                            PackageManagement.ManifestPackager packager = new ManifestPackager();
+                            Packager packager = new Packager();
                             Task.WaitAll(
                                 Task.Run(async () =>
                                 {
-                                    await packager.CreatePackage(options.InputDirectory,
+                                    await packager.ZipDirectory(options.InputDirectory,
                                         options.DestinationDirectory,
-                                        options.TempDirectory,
                                         options.PackageFilename);
                                 }));
 
