@@ -1,18 +1,18 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Codenesium.PackageManagement;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Threading;
 using Codenesium.PackageManagement.BuildCopyLib;
+using NUnit;
+using NUnit.Framework;
 
 namespace Packagemanager.Tests
 {
-    [TestClass]
     public class UnitTest1
     {
-        [TestMethod]
+        [Test]
         public void PackageFilename()
         {
             string name = Packager.PackageFilenameWithExtension("Package", "2016", "3");
@@ -21,7 +21,7 @@ namespace Packagemanager.Tests
             Assert.AreEqual(name, testName);
         }
 
-        [TestMethod]
+        [Test]
         public void CreateAndExtractPackageWithManifest()
         {
             var baseDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
