@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Codenesium.PackageManagement;
+using Codenesium.PackageManagementLib;
 using CommandLine;
 using CommandLine.Text;
 

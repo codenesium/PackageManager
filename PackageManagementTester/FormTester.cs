@@ -1,4 +1,4 @@
-﻿using Codenesium.PackageManagement;
+﻿using Codenesium.PackageManagementLib;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

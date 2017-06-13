@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Codenesium.PackageManagement
+namespace Codenesium.PackageManagementLib
 {
     public class ManifestFile : IComparable
     {

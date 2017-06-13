@@ -1,5 +1,5 @@
 ﻿using System;
-using Codenesium.PackageManagement;
+using Codenesium.PackageManagementLib;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;

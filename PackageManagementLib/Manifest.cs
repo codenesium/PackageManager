@@ -7,7 +7,7 @@ using System.IO;
 using System.Xml.Linq;
 using System.Security.Cryptography;
 
-namespace Codenesium.PackageManagement
+namespace Codenesium.PackageManagementLib
 {
     /// <summary>
     /// Creates a manifest of files and folders in a directory.

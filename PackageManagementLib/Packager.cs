@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using Ionic.Zip;
 
-namespace Codenesium.PackageManagement
+namespace Codenesium.PackageManagementLib
 {
     public class Packager
     {

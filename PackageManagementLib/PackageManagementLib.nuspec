@@ -1,18 +1,20 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>Codenesium.PackageManagement</id>
-    <version>1.0-Beta</version>
-    <title>PackageManagement</title>
-		<description>none</description>
+    <id>Codenesium.PackageManagementLib</id>
+    <version>$version$</version>
+    <title>PackageManagementLib</title>
+    <description>A zip file packaging library</description>
     <authors>Codenesium LLC</authors>
     <owners>Codenesium LLC</owners>
-    <copyright>Copyright 2016</copyright>
-  </metadata>
-    	<files>
-		<file src="bin\$configuration$\*.dll" target="lib\net461\" />
-	    <file src="bin\$configuration$\*.config" target="lib\net461\" />
-	    <file src="bin\$configuration$\*.xml" target="lib\net461\" />
-	    <file src="bin\$configuration$\*.exe" target="lib\net461\" />
+    <copyright>Copyright 2017</copyright>
+	<licenseUrl>https://github.com/codenesium/PackageManager/blob/master/License.txt</licenseUrl>
+    <projectUrl>https://github.com/codenesium/PackageManager</projectUrl>
+    <dependencies>
+        <dependency id="DotNetZip" version="1.10.1" />
+    </dependencies>
+    </metadata>
+    <files>
+		<file src="bin\release\Codenesium.PackageManagementLib.dll" target="lib\net461\" />
 	</files>
 </package>
