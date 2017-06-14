@@ -45,7 +45,7 @@ Library of functionality to create and extract minified zip files
 Install-Package Codenesium.PackageManagementLib
 ```
 
-As a wrapper for DotNetZip. There are more complex functionality like a manifest packager that isn't documented yet. 
+As a wrapper for DotNetZip. There is more complex functionality like a manifest packager that isn't documented here yet. 
 ```
 string inputDirectory = "c:\tmp\toZip";
 string destinationFileName = @"c:\tmp\test.zip";
