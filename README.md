@@ -1,6 +1,8 @@
 # PackageManager
 This repo is a collection of tools for deploying software on windows.
 
+
+
 The entire chain looks like this.
 
 1. Build your software
@@ -21,26 +23,39 @@ To use the projects I suggest
 4. Creating a powershell script to combine the various pieces to fit your needs referencing the executables in the packages folder in your solution
 
 
-##BuildCopyLib
+## BuildCopyLib
 Library of file copy functions
 
-##BuildCopyUtility
+## BuildCopyUtility
 Command line utility that uses a config file to copy files around. 
 
-##ConnectionStringUtility
+## ConnectionStringUtility
 Opens an xml file and replaces a value. I use it for connection string replacement.
 
-##ConsolePackager
+## ConsolePackager
 Uses command line arguments to create a minified zip file from a directory
 
-##DeploymentService
+## DeploymentService
 Windows service that runs on a server. It monitors a directory for zip files and then extracts/recombines/moves
 them to the correct directories.
 
-##PackageManagementLib
+## PackageManagementLib
 Library of functionality to create and extract minified zip files
+```
+Install-Package Codenesium.PackageManagementLib
+```
 
-##PackageManagementTester
+As a wrapper for DotNetZip. There are more complex functionality like a manifest packager that isn't documented yet. 
+```
+string inputDirectory = "c:\tmp\toZip";
+string destinationFileName = @"c:\tmp\test.zip";
+string outDirectory = @"c:\tmp\out";
+Packager packager = new Packager();
+await packager.ZipDirectory(inputDirectory Path.GetDirectoryName(destinationFileName), Path.GetFileName(destinationFileName));
+await packager.ZipDirectory(destinationFileName,outDirectory);
+```
+
+## PackageManagementTester
 Windows form tester for the PackageManagementLib
 
 
