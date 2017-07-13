@@ -76,11 +76,13 @@ namespace Codenesium.PackageManagement.ConsolePackager
                         catch (Exception ex)
                         {
                             Console.Write(ex.ToString());
+                            Environment.Exit(-1);
                         }
                     }
                 })
                 .WithNotParsed(errors =>
                 {
+                    Environment.Exit(-1);
                 });
         }
     }
