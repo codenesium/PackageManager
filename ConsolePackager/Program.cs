@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Codenesium.PackageManagementLib;
 using CommandLine;
 using CommandLine.Text;
+using NLog;
 
 namespace Codenesium.PackageManagement.ConsolePackager
 {
@@ -42,13 +43,22 @@ namespace Codenesium.PackageManagement.ConsolePackager
 
     internal class Program
     {
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
+
         private static void Main(string[] args)
         {
+            _logger.Info("Starting package");
+            foreach (string arg in args)
+            {
+                _logger.Debug($"Command line argument {arg}");
+            }
+
             var result = Parser.Default.ParseArguments<Options>(args)
                 .WithParsed(options =>
                 {
                     if (!String.IsNullOrEmpty(options.PackagePrefix))
                     {
+                        //return a package name mode
                         Console.WriteLine(Packager.PackageFilenameWithExtension(
                                         options.PackagePrefix,
                                         options.MajorVersion,
@@ -56,10 +66,6 @@ namespace Codenesium.PackageManagement.ConsolePackager
                     }
                     else
                     {
-                        foreach (string arg in args)
-                        {
-                            Console.WriteLine(arg);
-                        }
                         try
                         {
                             Packager packager = new Packager();
@@ -71,17 +77,18 @@ namespace Codenesium.PackageManagement.ConsolePackager
                                         options.PackageFilename);
                                 }));
 
-                            Console.WriteLine("Package complete");
+                           _logger.Info("Package complete");
                         }
                         catch (Exception ex)
                         {
-                            Console.Write(ex.ToString());
+                            _logger.Fatal(ex.ToString());
                             Environment.Exit(-1);
                         }
                     }
                 })
                 .WithNotParsed(errors =>
                 {
+                    _logger.Info("Invalid parameters");
                     Environment.Exit(-1);
                 });
         }

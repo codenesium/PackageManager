@@ -35,32 +35,34 @@ namespace Codenesium.PackageManagement.BuildCopyUtility
 
         private static void Main(string[] args)
         {
+            _logger.Info("Starting copy");
+            foreach (string arg in args)
+            {
+                _logger.Debug($"Command line argument {arg}");
+            }
+
             var result = Parser.Default.ParseArguments<Options>(args)
             .WithParsed(options =>
-            { // option
+            {
                 try
                 {
-                    foreach (string arg in args)
-                    {
-                        Console.WriteLine(arg);
-                    }
                     ProjectManager manager = new ProjectManager();
                     manager.LoadProjects(options.OutputDirectory, options.RepositoryRootDirectory, options.SourceDirectory);
-                    Console.WriteLine("Starting:" + options.ProjectName);
-                    _logger.Trace("Starting project {0}", options.ProjectName);
+                    _logger.Info($"Starting project { options.ProjectName}");
                     var stopwatch = System.Diagnostics.Stopwatch.StartNew();
                     Task.WaitAll(manager.ExecuteProject(options.ProjectName));
                     stopwatch.Stop();
-                    Console.WriteLine(String.Format("{0} completed in {1} ms", options.ProjectName, stopwatch.ElapsedMilliseconds));
+                    _logger.Info($"{options.ProjectName} completed in {stopwatch.ElapsedMilliseconds} ms");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Exception in BuildCopyUtility");
-                    _logger.Error("Exception in BuildCopyUtility", ex);
-                    Console.Write(ex.ToString());
+                    _logger.Fatal(ex);
                     Environment.Exit(-1);
                 }
-            }).WithNotParsed(errors => { });
+            }).WithNotParsed(errors => 
+            {
+                _logger.Fatal("Invalid arguments");
+            });
         }
     }
 }
