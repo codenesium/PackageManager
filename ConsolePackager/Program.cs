@@ -20,10 +20,6 @@ namespace Codenesium.PackageManagement.ConsolePackager
           HelpText = "The destination directory for the zipped file")]
         public string DestinationDirectory { get; set; }
 
-        [Option("TempDirectory", SetName = "Package",
-  HelpText = "The temporary directory where files will be copied before they are zipped")]
-        public string TempDirectory { get; set; }
-
         [Option("PackagePrefix", SetName = "GetFileName",
           HelpText = "The package name prefix will be in format <PackagePrefix>.<MajorVersion>.<MinorVersion.<Month><Day>.<Hour><Minute>")]
         public string PackagePrefix { get; set; }
