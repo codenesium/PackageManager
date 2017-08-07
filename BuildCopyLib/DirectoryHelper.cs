@@ -17,7 +17,7 @@ namespace Codenesium.PackageManagement.BuildCopyLib
         {
             try
             {
-                _logger.Trace("Copy source={0} targetDirectory={1}", sourceDirectory, targetDirectory);
+                _logger.Trace($"Copy source={sourceDirectory} targetDirectory={targetDirectory}");
                 DirectoryInfo diSource = new DirectoryInfo(sourceDirectory);
                 DirectoryInfo diTarget = new DirectoryInfo(targetDirectory);
                 CopyAll(diSource, diTarget);
@@ -68,17 +68,17 @@ namespace Codenesium.PackageManagement.BuildCopyLib
                     {
                         try
                         {
-                            _logger.Trace("Copying file source={0} targetDirectory={1}", fi.Name, Path.Combine(target.FullName, fi.Name));
+                            _logger.Trace("$Copying file source={fi.Name},targetDirectory={Path.Combine(target.FullName, fi.Name)}");
                             fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
                             attempts = 5;
                         }
                         catch (Exception ex)
                         {
-                            _logger.Trace("Exception copying. Will retry. directory={0},message={1}", fi.FullName, ex.Message);
+                            _logger.Trace($"Exception copying. Will retry. directory={fi.FullName},message={ex.Message}");
                             System.Threading.Thread.Sleep(200);
                             if (attempts >= 5)
                             {
-                                throw new Exception("Exceeded attempt count of 5. File =" + fi.FullName);
+                                throw new Exception($"Exceeded attempt count of 5. filename={fi.FullName}");
                             }
                             attempts++;
                         }
@@ -125,7 +125,7 @@ namespace Codenesium.PackageManagement.BuildCopyLib
             foreach (string file in files)
             {
                 File.SetAttributes(file, FileAttributes.Normal);
-                _logger.Trace("Deleting file={0}", file);
+                _logger.Trace($"Deleting file={file}");
                 int fileAttempts = 0;
                 while (fileAttempts < 5)
                 {
@@ -136,11 +136,11 @@ namespace Codenesium.PackageManagement.BuildCopyLib
                     }
                     catch (Exception ex)
                     {
-                        _logger.Trace("Exception deleting file. Will retry. directory={0,message={1}", directory, ex.Message);
+                        _logger.Trace($"Exception deleting file. Will retry. directory={directory},message={ex.Message}");
                         System.Threading.Thread.Sleep(200);
                         if (fileAttempts >= 5)
                         {
-                            throw new Exception("Exceeded attempt count of 5 trying to delete file " + file);
+                            throw new Exception($"Exceeded attempt count of 5 trying to delete filename={file}");
                         }
                         fileAttempts++;
                     }
@@ -157,7 +157,7 @@ namespace Codenesium.PackageManagement.BuildCopyLib
             {
                 try
                 {
-                    _logger.Trace("Deleting directory={0}", directory);
+                    _logger.Trace($"Deleting directory={directory}");
                     if (Directory.Exists(directory))
                     {
                         Directory.Delete(directory, false);
@@ -166,11 +166,11 @@ namespace Codenesium.PackageManagement.BuildCopyLib
                 }
                 catch (Exception ex)
                 {
-                    _logger.Trace("Exception deleting. Will retry. directory={0},message={1}", directory, ex.Message);
+                    _logger.Trace($"Exception deleting. Will retry. directory={directory},message={ex.Message}");
                     System.Threading.Thread.Sleep(200);
                     if (attempts >= 5)
                     {
-                        throw new Exception("Exceeded attempt count of 5 trying to delete directory " + directory);
+                        throw new Exception($"Exceeded attempt count of 5 trying to delete directory={directory}");
                     }
                     attempts++;
                 }
