@@ -71,6 +71,7 @@ namespace Codenesium.PackageManagement.BuildCopyLib
                         {
                             _logger.Trace("$Copying file source={fi.Name},targetDirectory={Path.Combine(target.FullName, fi.Name)}");
                             fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
+                            File.SetAttributes(Path.Combine(target.FullName, fi.Name), FileAttributes.Normal);
                             attempts = MAX_RETRY;
                         }
                         catch (Exception ex)
@@ -161,6 +162,7 @@ namespace Codenesium.PackageManagement.BuildCopyLib
 
             foreach (string file in files)
             {
+                File.SetAttributes(file, FileAttributes.Normal);
                 DeleteFile(file);
             }
 
