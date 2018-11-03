@@ -1,5 +1,5 @@
 
-set PKG_VER=2018.1.3
+set PKG_VER=2018.1.4
 
 nuget pack ../BuildCopyUtility/BuildCopyUtility.nuspec  -Version %PKG_VER% -Prop Configuration=Release -o  ../../NugetPackages
 nuget pack ../BuildCopyLib/BuildCopyLib.nuspec   -Version %PKG_VER% -Prop Configuration=Release -o  ../../NugetPackages

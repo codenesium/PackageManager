@@ -122,14 +122,17 @@ namespace Codenesium.PackageManagement.BuildCopyLib
                 return;
             }
 
-            File.SetAttributes(filename, FileAttributes.Normal);
-
             _logger.Trace($"Deleting file={filename}");
             int fileAttempts = 0;
             while (fileAttempts < MAX_RETRY)
             {
                 try
                 {
+                    if (!File.Exists(filename))
+                    {
+                        return;
+                    }
+                    File.SetAttributes(filename, FileAttributes.Normal);
                     File.Delete(filename);
                     break;
                 }
@@ -162,8 +165,7 @@ namespace Codenesium.PackageManagement.BuildCopyLib
 
             foreach (string file in files)
             {
-                File.SetAttributes(file, FileAttributes.Normal);
-                DeleteFile(file);
+               DeleteFile(file);
             }
 
             foreach (string dir in dirs)
@@ -176,7 +178,7 @@ namespace Codenesium.PackageManagement.BuildCopyLib
         /// Deletes a single directory without attempting to delete the contents
         /// </summary>
         /// <param name="directory"></param>
-        private static void deleteDirectorySingle(string directory)
+        private static void DeleteDirectorySingle(string directory)
         {
             if (!Directory.Exists(directory))
             {
@@ -222,7 +224,7 @@ namespace Codenesium.PackageManagement.BuildCopyLib
 
             DeleteDirectoryContents(directory);
 
-            deleteDirectorySingle(directory);
+            DeleteDirectorySingle(directory);
         }
     }
 }
