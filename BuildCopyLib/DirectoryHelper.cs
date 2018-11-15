@@ -157,7 +157,7 @@ namespace Codenesium.PackageManagement.BuildCopyLib
         {
             if (!Directory.Exists(directory))
             {
-                throw new DirectoryNotFoundException($"{directory} was not found");
+                return;
             }
 
             string[] files = Directory.GetFiles(directory);
