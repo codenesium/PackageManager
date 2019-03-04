@@ -69,7 +69,7 @@ namespace Codenesium.PackageManagement.BuildCopyLib
                     {
                         try
                         {
-                            _logger.Trace("$Copying file source={fi.Name},targetDirectory={Path.Combine(target.FullName, fi.Name)}");
+                            _logger.Trace($"Copying file source={fi.Name},targetDirectory={Path.Combine(target.FullName, fi.Name)}");
                             fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
                             File.SetAttributes(Path.Combine(target.FullName, fi.Name), FileAttributes.Normal);
                             attempts = MAX_RETRY;
