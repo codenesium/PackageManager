@@ -193,7 +193,7 @@ namespace Codenesium.PackageManagement.BuildCopyLib
                     _logger.Trace($"Deleting directory={directory}");
                     if (Directory.Exists(directory))
                     {
-                        Directory.Delete(directory, false);
+                        Directory.Delete(directory, true);
                     }
                     break;
                 }
