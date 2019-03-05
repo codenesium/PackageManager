@@ -170,7 +170,7 @@ namespace Codenesium.PackageManagement.BuildCopyLib
 
             foreach (string file in files)
             {
-               DeleteFileInternal(file);
+               DeleteFile(file);
             }
 
             foreach (string dir in dirs)
