@@ -3,18 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO;
 using NLog;
 using System.Runtime.InteropServices;
+using ZetaLongPaths;
 
 namespace Codenesium.PackageManagement.BuildCopyLib
 {
     public class DirectoryHelper
     {
-        //This is real dumb but File operaitons like File.Delete don't work on paths longer than 260 characters.
-        // So you have to call the windows API and prepend the file path with \\?\
-        [DllImport("kernel32.dll", EntryPoint = "DeleteFile", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern bool DeleteFileInternal(string path);
 
         private static Logger _logger = LogManager.GetCurrentClassLogger();
         //ripped from http://stackoverflow.com/questions/58744/best-way-to-copy-the-entire-contents-of-a-directory-in-c-sharp
@@ -25,8 +21,8 @@ namespace Codenesium.PackageManagement.BuildCopyLib
             try
             {
                 _logger.Trace($"Copy source={sourceDirectory} targetDirectory={targetDirectory}");
-                DirectoryInfo diSource = new DirectoryInfo(sourceDirectory);
-                DirectoryInfo diTarget = new DirectoryInfo(targetDirectory);
+                ZlpDirectoryInfo diSource = new ZlpDirectoryInfo(sourceDirectory);
+                ZlpDirectoryInfo diTarget = new ZlpDirectoryInfo(targetDirectory);
                 CopyAll(diSource, diTarget);
             }
             catch (Exception)
@@ -40,18 +36,18 @@ namespace Codenesium.PackageManagement.BuildCopyLib
         /// </summary>
         /// <param name="source"></param>
         /// <param name="target"></param>
-        private static void CopyAll(DirectoryInfo source, DirectoryInfo target)
+        private static void CopyAll(ZlpDirectoryInfo source, ZlpDirectoryInfo target)
         {
             try
             {
                 // Check if the target directory exists; if not, create it.
-                if (!Directory.Exists(target.FullName))
+                if (!ZlpIOHelper.DirectoryExists(target.FullName))
                 {
                     int directoryCreationAttempts = 0;
                     while (directoryCreationAttempts < MAX_RETRY)
                     {
-                        Directory.CreateDirectory(target.FullName);
-                        if (Directory.Exists(target.FullName))
+                        ZlpIOHelper.CreateDirectory(target.FullName);
+                        if (ZlpIOHelper.DirectoryExists(target.FullName))
                         {
                             break;
                         }
@@ -68,16 +64,15 @@ namespace Codenesium.PackageManagement.BuildCopyLib
                 }
 
                 // Copy each file into the new directory.
-                foreach (FileInfo fi in source.GetFiles())
+                foreach (ZlpFileInfo fi in source.GetFiles())
                 {
                     int attempts = 0;
                     while (attempts < MAX_RETRY)
                     {
                         try
                         {
-                            _logger.Trace($"Copying file source={fi.Name},targetDirectory={Path.Combine(target.FullName, fi.Name)}");
-                            fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
-                            File.SetAttributes(Path.Combine(target.FullName, fi.Name), FileAttributes.Normal);
+                            _logger.Trace($"Copying file source={fi.Name},targetDirectory={ZlpPathHelper.Combine(target.FullName, fi.Name)}");
+                            fi.CopyTo(ZlpPathHelper.Combine(target.FullName, fi.Name), true);
                             attempts = MAX_RETRY;
                         }
                         catch (Exception ex)
@@ -94,9 +89,9 @@ namespace Codenesium.PackageManagement.BuildCopyLib
                 }
 
                 // Copy each subdirectory using recursion.
-                foreach (DirectoryInfo diSourceSubDir in source.GetDirectories())
+                foreach (ZlpDirectoryInfo diSourceSubDir in source.GetDirectories())
                 {
-                    DirectoryInfo nextTargetSubDir =
+                    ZlpDirectoryInfo nextTargetSubDir =
                         target.CreateSubdirectory(diSourceSubDir.Name);
                     CopyAll(diSourceSubDir, nextTargetSubDir);
                 }
@@ -132,8 +127,8 @@ namespace Codenesium.PackageManagement.BuildCopyLib
             {
                 try
                 {
-                    File.SetAttributes(longFilename, FileAttributes.Normal);
-                    DeleteFileInternal(longFilename);
+                    ZlpFileInfo file = new ZlpFileInfo(longFilename);
+                    ZlpIOHelper.DeleteFile(longFilename);
                     break;
                 }
                 catch (Exception ex)
@@ -157,25 +152,27 @@ namespace Codenesium.PackageManagement.BuildCopyLib
         {
             _logger.Trace($"Deleting directory={directory}.");
 
-            if (!Directory.Exists(directory))
+            if (!ZlpIOHelper.DirectoryExists(directory))
             {
                 _logger.Trace($"Directory doesn't exist. Returning. directory={directory}.");
                 return;
             }
 
-            string[] files = Directory.GetFiles(directory);
-            string[] dirs = Directory.GetDirectories(directory);
+            ZlpDirectoryInfo source = new ZlpDirectoryInfo(directory);
+
+            ZlpFileInfo [] files = source.GetFiles(directory);
+            ZlpDirectoryInfo[] dirs = source.GetDirectories(directory);
 
             _logger.Trace($"File count={files.Length}. Directory count={dirs.Length}");
 
-            foreach (string file in files)
+            foreach (var file in files)
             {
-               DeleteFile(file);
+               DeleteFile(file.FullName);
             }
 
-            foreach (string dir in dirs)
+            foreach (var dir in dirs)
             {
-                DeleteDirectory(dir);
+                DeleteDirectory(dir.FullName);
             }
         }
 
@@ -187,13 +184,14 @@ namespace Codenesium.PackageManagement.BuildCopyLib
         {
             _logger.Trace($"Deleting directory={directory}");
 
-            if (!Directory.Exists(directory))
+            if (!ZlpIOHelper.DirectoryExists(directory))
             {
                 _logger.Trace($"Directory doesn't exist. Returning. directory={directory}.");
                 return;
             }
 
-            if(Directory.GetFiles(directory).Length > 0)
+            ZlpDirectoryInfo source = new ZlpDirectoryInfo(directory);
+            if(source.GetFiles(directory).Length > 0)
             {
                 throw new Exception("Directory contains files.");
             }
@@ -204,9 +202,9 @@ namespace Codenesium.PackageManagement.BuildCopyLib
                 try
                 {
                     _logger.Trace($"Deleting directory={directory}. Attempts={attempts}");
-                    if (Directory.Exists(directory))
+                    if (ZlpIOHelper.DirectoryExists(directory))
                     {
-                        Directory.Delete(directory, false);
+                        ZlpIOHelper.DeleteDirectory(directory, false);
                     }
                     break;
                 }
@@ -232,7 +230,7 @@ namespace Codenesium.PackageManagement.BuildCopyLib
         {
             _logger.Trace($"Deleting directory={directory}");
 
-            if (!Directory.Exists(directory))
+            if (!ZlpIOHelper.DirectoryExists(directory))
             {
                 _logger.Trace($"Directory doesn't exist. Returning. directory={directory}.");
                 return;
