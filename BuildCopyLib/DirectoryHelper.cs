@@ -119,25 +119,24 @@ namespace Codenesium.PackageManagement.BuildCopyLib
         public static void DeleteFile(string filename)
         {
       
-            string longFilename = @"\\?\" + filename;
-            _logger.Trace($"Deleting file={longFilename}");
+            _logger.Trace($"Deleting file={filename}");
 
             int fileAttempts = 0;
             while (fileAttempts < MAX_RETRY)
             {
                 try
                 {
-                    ZlpFileInfo file = new ZlpFileInfo(longFilename);
-                    ZlpIOHelper.DeleteFile(longFilename);
+                    ZlpFileInfo file = new ZlpFileInfo(filename);
+                    ZlpIOHelper.DeleteFile(filename);
                     break;
                 }
                 catch (Exception ex)
                 {
-                    _logger.Trace($"Exception deleting file. Will retry. filename={longFilename}, message={ex.Message}");
+                    _logger.Trace($"Exception deleting file. Will retry. filename={filename}, message={ex.Message}");
                     System.Threading.Thread.Sleep(RETRY_DELAY_MS);
                     if (fileAttempts >= MAX_RETRY)
                     {
-                        throw new Exception($"Exceeded attempt count of {MAX_RETRY} trying to delete filename={longFilename}");
+                        throw new Exception($"Exceeded attempt count of {MAX_RETRY} trying to delete filename={filename}");
                     }
                     fileAttempts++;
                 }
@@ -160,8 +159,8 @@ namespace Codenesium.PackageManagement.BuildCopyLib
 
             ZlpDirectoryInfo source = new ZlpDirectoryInfo(directory);
 
-            ZlpFileInfo [] files = source.GetFiles(directory);
-            ZlpDirectoryInfo[] dirs = source.GetDirectories(directory);
+            ZlpFileInfo [] files = source.GetFiles();
+            ZlpDirectoryInfo[] dirs = source.GetDirectories();
 
             _logger.Trace($"File count={files.Length}. Directory count={dirs.Length}");
 

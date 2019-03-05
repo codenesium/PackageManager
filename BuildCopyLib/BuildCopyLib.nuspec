@@ -8,8 +8,13 @@
     <authors>Codenesium LLC</authors>
     <owners>Codenesium LLC</owners>
     <copyright>Copyright 2016</copyright>
+    <dependencies>
+		<dependency id="NLog" version="4.4.11" />
+		<dependency id="ZetaLongPaths" version="1.0.0.28" />
+    </dependencies>
   </metadata>
   	<files>
 		<file src="bin\$configuration$\Codenesium.PackageManagement.BuildCopyLib.dll" target="lib\net461\" />
+		<file src="bin\$configuration$\Codenesium.PackageManagement.BuildCopyLib.pdb" target="lib\net461\" />
 	</files>
 </package>
