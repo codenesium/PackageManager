@@ -5,11 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using NLog;
+using System.Runtime.InteropServices;
 
 namespace Codenesium.PackageManagement.BuildCopyLib
 {
     public class DirectoryHelper
     {
+        //This is real dumb but File operaitons like File.Delete don't work on paths longer than 260 characters.
+        // So you have to call the windows API and prepend the file path with \\?\
+        [DllImport("kernel32.dll", EntryPoint = "DeleteFile", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern bool DeleteFileInternal(string path);
+
         private static Logger _logger = LogManager.GetCurrentClassLogger();
         //ripped from http://stackoverflow.com/questions/58744/best-way-to-copy-the-entire-contents-of-a-directory-in-c-sharp
         private const int MAX_RETRY = 10;
@@ -117,32 +123,26 @@ namespace Codenesium.PackageManagement.BuildCopyLib
 
         public static void DeleteFile(string filename)
         {
-            if (!File.Exists(filename))
-            {
-                return;
-            }
+      
+            string longFilename = @"\\?\" + filename;
+            _logger.Trace($"Deleting file={longFilename}");
 
-            _logger.Trace($"Deleting file={filename}");
             int fileAttempts = 0;
             while (fileAttempts < MAX_RETRY)
             {
                 try
                 {
-                    if (!File.Exists(filename))
-                    {
-                        return;
-                    }
-                    File.SetAttributes(filename, FileAttributes.Normal);
-                    File.Delete(filename);
+                    File.SetAttributes(longFilename, FileAttributes.Normal);
+                    DeleteFileInternal(longFilename);
                     break;
                 }
                 catch (Exception ex)
                 {
-                    _logger.Trace($"Exception deleting file. Will retry. filename={filename},message={ex.Message}");
+                    _logger.Trace($"Exception deleting file. Will retry. filename={longFilename}, message={ex.Message}");
                     System.Threading.Thread.Sleep(RETRY_DELAY_MS);
                     if (fileAttempts >= MAX_RETRY)
                     {
-                        throw new Exception($"Exceeded attempt count of {MAX_RETRY} trying to delete filename={filename}");
+                        throw new Exception($"Exceeded attempt count of {MAX_RETRY} trying to delete filename={longFilename}");
                     }
                     fileAttempts++;
                 }
@@ -155,17 +155,22 @@ namespace Codenesium.PackageManagement.BuildCopyLib
         /// <param name="directory"></param>
         public static void DeleteDirectoryContents(string directory)
         {
+            _logger.Trace($"Deleting directory={directory}.");
+
             if (!Directory.Exists(directory))
             {
+                _logger.Trace($"Directory doesn't exist. Returning. directory={directory}.");
                 return;
             }
 
             string[] files = Directory.GetFiles(directory);
             string[] dirs = Directory.GetDirectories(directory);
 
+            _logger.Trace($"File count={files.Length}. Directory count={dirs.Length}");
+
             foreach (string file in files)
             {
-               DeleteFile(file);
+               DeleteFileInternal(file);
             }
 
             foreach (string dir in dirs)
@@ -180,9 +185,17 @@ namespace Codenesium.PackageManagement.BuildCopyLib
         /// <param name="directory"></param>
         private static void DeleteDirectorySingle(string directory)
         {
+            _logger.Trace($"Deleting directory={directory}");
+
             if (!Directory.Exists(directory))
             {
+                _logger.Trace($"Directory doesn't exist. Returning. directory={directory}.");
                 return;
+            }
+
+            if(Directory.GetFiles(directory).Length > 0)
+            {
+                throw new Exception("Directory contains files.");
             }
 
             int attempts = 0;
@@ -190,10 +203,10 @@ namespace Codenesium.PackageManagement.BuildCopyLib
             {
                 try
                 {
-                    _logger.Trace($"Deleting directory={directory}");
+                    _logger.Trace($"Deleting directory={directory}. Attempts={attempts}");
                     if (Directory.Exists(directory))
                     {
-                        Directory.Delete(directory, true);
+                        Directory.Delete(directory, false);
                     }
                     break;
                 }
@@ -217,8 +230,11 @@ namespace Codenesium.PackageManagement.BuildCopyLib
         // http://stackoverflow.com/questions/329355/cannot-delete-directory-with-directory-deletepath-true
         public static void DeleteDirectory(string directory)
         {
+            _logger.Trace($"Deleting directory={directory}");
+
             if (!Directory.Exists(directory))
             {
+                _logger.Trace($"Directory doesn't exist. Returning. directory={directory}.");
                 return;
             }
 
