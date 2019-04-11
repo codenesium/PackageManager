@@ -16,14 +16,14 @@ namespace Codenesium.PackageManagement.BuildCopyLib
         //ripped from http://stackoverflow.com/questions/58744/best-way-to-copy-the-entire-contents-of-a-directory-in-c-sharp
         private const int MAX_RETRY = 10;
         private const int RETRY_DELAY_MS = 200;
-        public static void Copy(string sourceDirectory, string targetDirectory)
+        public static void Copy(string sourceDirectory, string targetDirectory, List<string> ignorePaths = default(List<string>))
         {
             try
             {
                 _logger.Trace($"Copy source={sourceDirectory} targetDirectory={targetDirectory}");
                 ZlpDirectoryInfo diSource = new ZlpDirectoryInfo(sourceDirectory);
                 ZlpDirectoryInfo diTarget = new ZlpDirectoryInfo(targetDirectory);
-                CopyAll(diSource, diTarget);
+                CopyAll(diSource, diTarget, ignorePaths);
             }
             catch (Exception)
             {
@@ -36,10 +36,20 @@ namespace Codenesium.PackageManagement.BuildCopyLib
         /// </summary>
         /// <param name="source"></param>
         /// <param name="target"></param>
-        private static void CopyAll(ZlpDirectoryInfo source, ZlpDirectoryInfo target)
+        private static void CopyAll(ZlpDirectoryInfo source, ZlpDirectoryInfo target, List<string> ignorePaths = default(List<string>))
         {
             try
             {
+                if (ignorePaths != null)
+                {
+                    foreach (string ignore in ignorePaths)
+                    {
+                        if (target.FullName.ToUpper().Contains(ignore.ToUpper()))
+                        {
+                            return;
+                        }
+                    }
+                }
                 // Check if the target directory exists; if not, create it.
                 if (!ZlpIOHelper.DirectoryExists(target.FullName))
                 {
